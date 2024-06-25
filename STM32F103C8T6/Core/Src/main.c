@@ -142,9 +142,12 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1) {
     /* USER CODE END WHILE */
-	  uint8_t data = digitMapWithDP[2]; // Data to display '1' with DP
-	 	      ShiftOut_SPI(&data, 1);
-	 	  	  ShiftOut(digitMapWithDP[1]);
+	  for(int i=0;i<10;i++){
+		  uint8_t data = digitMapWithDP[i]; // Data to display '1' with DP
+		  ShiftOut_SPI(&data, 1);
+		  ShiftOut(digitMapWithDP[i]);
+		  HAL_Delay(1000);
+	  }
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
