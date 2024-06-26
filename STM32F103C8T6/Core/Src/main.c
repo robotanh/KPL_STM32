@@ -22,7 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
-#include "timer.h"
+#include "LED_Screen.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -44,31 +44,6 @@
 SPI_HandleTypeDef hspi2;
 
 /* USER CODE BEGIN PV */
-uint8_t digitMap[10] = {
-    0b11000000, // 0
-    0b11111001, // 1
-    0b10100100, // 2
-    0b10110000, // 3
-    0b10011001, // 4
-    0b10010010, // 5
-    0b10000010, // 6
-    0b11111000, // 7
-    0b10000000, // 8
-      0b10010000// 9
-};
-
-uint8_t digitMapWithDP[10] = {
-    0b11000000, // 0 with DP
-	0b11111001, // 1 with DP (0b01111001)
-    0b10100100, // 2 with DP
-    0x30, // 3 with DP (0b00110000)
-    0x19, // 4 with DP (0b00011001)
-    0x12, // 5 with DP (0b00010010)
-    0x02, // 6 with DP (0b00000010)
-    0x78, // 7 with DP (0b01111000)
-    0x00, // 8 with DP (0b00000000)
-    0x10  // 9 with DP (0b00010000)
-};
 
 /* USER CODE END PV */
 
@@ -143,12 +118,11 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1) {
     /* USER CODE END WHILE */
-	  for(int i=0;i<10;i++){
-		  uint8_t data = digitMapWithDP[i]; // Data to display '1' with DP
-		  ShiftOut_SPI(&data, 1);
-		  ShiftOut(digitMapWithDP[i]);
-		  HAL_Delay(1000);
-	  }
+
+	  uint8_t data[4] = {0b00011111,digitMapWithDP[1],digitMapWithDP[2],digitMapWithDP[3]}; // Data to display '1' with DP
+	  ShiftOut_SPI(data, 4);
+	  HAL_Delay(1000);
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
