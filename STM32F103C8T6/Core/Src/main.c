@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include "LED_Screen.h"
 #include "timer.h"
+#include "KeyPad.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -51,7 +52,7 @@ TIM_HandleTypeDef htim2;
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
-
+uint8_t keyPressed = 0xFF;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -130,6 +131,7 @@ int main(void)
   HAL_TIM_Base_Start_IT(&htim2);
   int i=0;
    setTimer(0,100);
+   setTimer(1, 100);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -142,6 +144,16 @@ int main(void)
 		  i++;
 		  setTimer(0,100);
 	  }
+	  if(timer_flag[1]==1){
+		  keyPressed = KeyPad_Scan();
+		  	  if (keyPressed != 0xFF) // If a key is pressed
+		  	  {
+		  		  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+
+		  	  }
+		  	setTimer(0,100);
+	  }
+
 
 //	  ShiftOut(digitMapWithDP[0]);
 //	  HAL_Delay(1000);
@@ -360,12 +372,22 @@ static void MX_GPIO_Init(void)
 /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, Latch_SPI_Pin|OUT0_Pin|OUT1_Pin|OUT2_Pin
                           |OUT3_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : LED_Pin */
+  GPIO_InitStruct.Pin = LED_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(LED_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : D0_Pin D1_Pin D2_Pin D3_Pin
                            D4_Pin */
@@ -396,7 +418,9 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 	timerRun();
+
 }
+
 /* USER CODE END 4 */
 
 /**
