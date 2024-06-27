@@ -23,6 +23,7 @@
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
 #include "LED_Screen.h"
+#include "timer.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -47,6 +48,7 @@ SPI_HandleTypeDef hspi2;
 
 UART_HandleTypeDef huart1;
 
+TIM_HandleTypeDef htim2;
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -67,15 +69,15 @@ void ShiftOut_SPI(uint8_t *data, size_t size);
 void ShiftOut(uint8_t data)
 {
 	uint8_t temp;
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, 0);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);
 	for(int i=0;i<8;i++){
 		temp = data & (0x80 >> i);
-		if(temp == 0) HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, 0);
-		else HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, 1);
-		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, 1);
-		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, 0);
+		if(temp == 0) HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_RESET);
+		else HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
 	}
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, 1);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);
 }
 void ShiftOut_SPI(uint8_t *data, size_t size)
 {
@@ -119,16 +121,34 @@ int main(void)
   MX_USART1_UART_Init();
   MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
-
+  HAL_TIM_Base_Start_IT(&htim2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  int i=0;
+  setTimer(0,100);
   while (1) {
+	  if(timer_flag[0]==1){
+		  uint8_t data[] = {0b11111111,digitMapWithDP[i%10],digitMapWithDP[(i+1)%10],digitMapWithDP[(i+2)%10]}; // Data to display '1' with DP
+		  ShiftOut_SPI(data, 4);
+		  i++;
+		  setTimer(0,100);
+	  }
+
+//	  ShiftOut(digitMapWithDP[0]);
+//	  HAL_Delay(1000);
+//	  ShiftOut(digitMapWithDP[1]);
+//	  HAL_Delay(1000);
+//	  ShiftOut(digitMapWithDP[2]);
+//	  HAL_Delay(1000);
+//	  ShiftOut(digitMapWithDP[3]);
+//	  HAL_Delay(1000);
+//	  ShiftOut(digitMapWithDP[4]);
+//	  HAL_Delay(1000);
+//	  ShiftOut(digitMapWithDP[5]);
+//	  HAL_Delay(1000);
     /* USER CODE END WHILE */
-	  uint8_t data[4] = {0b00011111,digitMapWithDP[1],digitMapWithDP[2],digitMapWithDP[3]}; // Data to display '1' with DP
-		  	  ShiftOut_SPI(data, 4);
-		  	  HAL_Delay(1000);
 
     /* USER CODE BEGIN 3 */
   }
@@ -319,7 +339,9 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+	timerRun();
+}
 /* USER CODE END 4 */
 
 /**
