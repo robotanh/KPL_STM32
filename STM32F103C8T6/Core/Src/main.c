@@ -87,6 +87,12 @@ void ShiftOut_SPI(uint8_t *data, size_t size)
 
 }
 
+void ShiftOut_LCD(uint8_t *data, size_t size)
+{
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET); // Pull STCP (Latch) low
+    HAL_SPI_Transmit(&hspi1, data, size, 300); // Transmit data
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET); // Pull STCP (Latch) high
+}
 
 /* USER CODE END 0 */
 
@@ -126,7 +132,8 @@ int main(void)
   HAL_TIM_Base_Start_IT(&htim2);
   int i=0;
    setTimer(0,100);
-   setTimer(1, 100);
+   setTimer(1,100);
+   setTimer(2,100);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -137,17 +144,23 @@ int main(void)
 		  uint8_t data[] = {0b11111111,digitMapWithDP[i%10],digitMapWithDP[(i+1)%10],digitMapWithDP[(i+2)%10]}; // Data to display '1' with DP
 		  ShiftOut_SPI(data, 4);
 		  i++;
-		  setTimer(0,100);
+		  setTimer(0,250);
 	  }
-//	  if(timer_flag[1]==1){
+	  if(timer_flag[1]==1){
 		  keyPressed = KeyPad_Scan();
-		  	  if (keyPressed != 0xFF) // If a key is pressed
-		  	  {
-		  		  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+		  if (keyPressed != 0xFF) // If a key is pressed
+		  {
+			  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_2);
 
-		  	  }
-//		  	setTimer(1,100);
-//	  }
+		  }
+		  setTimer(1,100);
+	  }
+	  if(timer_flag[2]==1){
+		  uint8_t data[] = {digitMapWithDP[i%10],digitMapWithDP[(i+1)%10],digitMapWithDP[(i+2)%10],digitMapWithDP[(i+3)%10],digitMapWithDP[(i+4)%10],digitMapWithDP[(i+5)%10],digitMapWithDP[(i+6)%10],digitMapWithDP[(i+7)%10]};
+		  ShiftOut_LCD(data, 8);
+		  i++;
+		  setTimer(2,250);
+	  }
 
 
 //	  ShiftOut(digitMapWithDP[0]);
