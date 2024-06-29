@@ -45,9 +45,9 @@
 /* Private variables ---------------------------------------------------------*/
 SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi2;
-
 TIM_HandleTypeDef htim2;
 
+uint32_t lcd_num=1;
 /* USER CODE BEGIN PV */
 uint8_t keyPressed = 0xFF;
 /* USER CODE END PV */
@@ -94,6 +94,29 @@ void ShiftOut_LCD(uint8_t *data, size_t size)
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET); // Pull STCP (Latch) high
 }
 
+uint8_t* Num_Buff_Conv(uint32_t num) {
+    // Ensure the number is within the valid range
+    if (num > 99999999) {
+        return NULL; // Return NULL for invalid input
+    }
+
+    static uint8_t output[8]; // Static array to hold the result
+    for (int i = 0; i < 8; i++) {
+        output[i] = digitMapWithDP[num % 10]; // Get the least significant digit
+        num /= 10;            // Remove the least significant digit from the number
+    }
+
+    return output;
+}
+
+void Update_LCD(uint32_t num){
+	uint8_t* buffer=Num_Buff_Conv(num);
+	if(buffer==NULL){
+		return;
+	}
+	ShiftOut_LCD(buffer,8);
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -131,9 +154,11 @@ int main(void)
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim2);
   int i=0;
-   setTimer(0,100);
-   setTimer(1,100);
-   setTimer(2,100);
+  setTimer(0,100);
+  setTimer(1,100);
+  setTimer(2,100);
+
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -141,10 +166,10 @@ int main(void)
 
   while (1) {
 	  if(timer_flag[0]==1){
-		  uint8_t data[] = {0b11111111,digitMapWithDP[i%10],digitMapWithDP[(i+1)%10],digitMapWithDP[(i+2)%10]}; // Data to display '1' with DP
-		  ShiftOut_SPI(data, 4);
+		  uint8_t led_buffer[] = {0b11111111,digitMapWithDP[i%10],digitMapWithDP[(i+1)%10],digitMapWithDP[(i+2)%10]}; // Data to display '1' with DP
+		  ShiftOut_SPI(led_buffer, 4);
 		  i++;
-		  setTimer(0,250);
+		  setTimer(0,100);
 	  }
 	  if(timer_flag[1]==1){
 		  keyPressed = KeyPad_Scan();
@@ -156,10 +181,10 @@ int main(void)
 		  setTimer(1,100);
 	  }
 	  if(timer_flag[2]==1){
-		  uint8_t data[] = {digitMapWithDP[i%10],digitMapWithDP[(i+1)%10],digitMapWithDP[(i+2)%10],digitMapWithDP[(i+3)%10],digitMapWithDP[(i+4)%10],digitMapWithDP[(i+5)%10],digitMapWithDP[(i+6)%10],digitMapWithDP[(i+7)%10]};
-		  ShiftOut_LCD(data, 8);
-		  i++;
-		  setTimer(2,250);
+
+		  Update_LCD(lcd_num);
+		  lcd_num*=2;
+		  setTimer(2,100);
 	  }
 
 
