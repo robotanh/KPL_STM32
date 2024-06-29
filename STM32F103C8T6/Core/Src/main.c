@@ -144,15 +144,15 @@ int main(void)
 		  i++;
 		  setTimer(0,100);
 	  }
-	  if(timer_flag[1]==1){
+//	  if(timer_flag[1]==1){
 		  keyPressed = KeyPad_Scan();
 		  	  if (keyPressed != 0xFF) // If a key is pressed
 		  	  {
 		  		  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
 
 		  	  }
-		  	setTimer(0,100);
-	  }
+//		  	setTimer(1,100);
+//	  }
 
 
 //	  ShiftOut(digitMapWithDP[0]);
