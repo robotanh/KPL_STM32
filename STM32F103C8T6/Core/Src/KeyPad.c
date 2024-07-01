@@ -24,7 +24,7 @@ const uint8_t keyMap[4][5] = {
     {100, 7, 4, 1, 1}
 };
 
-#define DEBOUNCE_DELAY 100
+#define DEBOUNCE_DELAY 500
 
 GPIO_InitTypeDef GPIO_InitStructPrivate = {0};
 uint32_t lastDebounceTime = 0;
