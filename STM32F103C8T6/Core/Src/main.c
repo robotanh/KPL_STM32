@@ -18,12 +18,12 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "cmsis_os.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
 #include "LED_Screen.h"
-#include "timer.h"
 #include "KeyPad.h"
 /* USER CODE END Includes */
 
@@ -45,19 +45,24 @@
 /* Private variables ---------------------------------------------------------*/
 SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi2;
-TIM_HandleTypeDef htim2;
 
-uint32_t lcd_num=1;
+osThreadId SevenSegsHandle;
+osThreadId KeyBoardHandle;
+osThreadId LCDHandle;
 /* USER CODE BEGIN PV */
 uint8_t keyPressed = 0xFF;
+uint32_t lcd_num = 1;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_SPI2_Init(void);
-static void MX_TIM2_Init(void);
 static void MX_SPI1_Init(void);
+void SevenSegs_Handler(void const * argument);
+void KeyBoard_Handler(void const * argument);
+void LCD_Handler(void const * argument);
+
 /* USER CODE BEGIN PFP */
 void ShiftOut(uint8_t data);
 void ShiftOut_SPI(uint8_t *data, size_t size);
@@ -149,43 +154,75 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_SPI2_Init();
-  MX_TIM2_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_Base_Start_IT(&htim2);
-  int i=0;
-  setTimer(0,100);
-  setTimer(1,100);
-  setTimer(2,100);
 
 
   /* USER CODE END 2 */
+
+  /* USER CODE BEGIN RTOS_MUTEX */
+  /* add mutexes, ... */
+  /* USER CODE END RTOS_MUTEX */
+
+  /* USER CODE BEGIN RTOS_SEMAPHORES */
+  /* add semaphores, ... */
+  /* USER CODE END RTOS_SEMAPHORES */
+
+  /* USER CODE BEGIN RTOS_TIMERS */
+  /* start timers, add new ones, ... */
+  /* USER CODE END RTOS_TIMERS */
+
+  /* USER CODE BEGIN RTOS_QUEUES */
+  /* add queues, ... */
+  /* USER CODE END RTOS_QUEUES */
+
+  /* Create the thread(s) */
+  /* definition and creation of SevenSegs */
+  osThreadDef(SevenSegs, SevenSegs_Handler, osPriorityNormal, 0, 128);
+  SevenSegsHandle = osThreadCreate(osThread(SevenSegs), NULL);
+
+  /* definition and creation of KeyBoard */
+  osThreadDef(KeyBoard, KeyBoard_Handler, osPriorityHigh, 0, 128);
+  KeyBoardHandle = osThreadCreate(osThread(KeyBoard), NULL);
+
+  /* definition and creation of LCD */
+  osThreadDef(LCD, LCD_Handler, osPriorityAboveNormal, 0, 128);
+  LCDHandle = osThreadCreate(osThread(LCD), NULL);
+
+  /* USER CODE BEGIN RTOS_THREADS */
+  /* add threads, ... */
+  /* USER CODE END RTOS_THREADS */
+
+  /* Start scheduler */
+  osKernelStart();
+
+  /* We should never get here as control is now taken by the scheduler */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
   while (1) {
-	  if(timer_flag[0]==1){
-		  uint8_t led_buffer[] = {0b11111111,digitMapWithDP[i%10],digitMapWithDP[(i+1)%10],digitMapWithDP[(i+2)%10]}; // Data to display '1' with DP
-		  ShiftOut_SPI(led_buffer, 4);
-		  i++;
-		  setTimer(0,100);
-	  }
-	  if(timer_flag[1]==1){
-		  keyPressed = KeyPad_Scan();
-		  if (keyPressed != 0xFF) // If a key is pressed
-		  {
-			  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_2);
-
-		  }
-		  setTimer(1,100);
-	  }
-	  if(timer_flag[2]==1){
-
-		  Update_LCD(lcd_num);
-		  lcd_num*=2;
-		  setTimer(2,100);
-	  }
+//	  if(timer_flag[0]==1){
+//		  uint8_t led_buffer[] = {0b11111111,digitMapWithDP[i%10],digitMapWithDP[(i+1)%10],digitMapWithDP[(i+2)%10]}; // Data to display '1' with DP
+//		  ShiftOut_SPI(led_buffer, 4);
+//		  i++;
+//		  setTimer(0,100);
+//	  }
+//	  if(timer_flag[1]==1){
+//		  keyPressed = KeyPad_Scan();
+//		  if (keyPressed != 0xFF) // If a key is pressed
+//		  {
+//			  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_2);
+//
+//		  }
+//		  setTimer(1,100);
+//	  }
+//	  if(timer_flag[2]==1){
+//
+//		  Update_LCD(lcd_num);
+//		  lcd_num*=2;
+//		  setTimer(2,100);
+//	  }
 
 
 //	  ShiftOut(digitMapWithDP[0]);
@@ -320,51 +357,6 @@ static void MX_SPI2_Init(void)
 }
 
 /**
-  * @brief TIM2 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_TIM2_Init(void)
-{
-
-  /* USER CODE BEGIN TIM2_Init 0 */
-
-  /* USER CODE END TIM2_Init 0 */
-
-  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
-  TIM_MasterConfigTypeDef sMasterConfig = {0};
-
-  /* USER CODE BEGIN TIM2_Init 1 */
-
-  /* USER CODE END TIM2_Init 1 */
-  htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 7999;
-  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 9;
-  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
-  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN TIM2_Init 2 */
-
-  /* USER CODE END TIM2_Init 2 */
-
-}
-
-/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -380,18 +372,18 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(Latch_SPI1_GPIO_Port, Latch_SPI1_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, LED_Pin|Latch_SPI1_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, Latch_SPI_Pin|OUT0_Pin|OUT1_Pin|OUT2_Pin
                           |OUT3_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : Latch_SPI1_Pin */
-  GPIO_InitStruct.Pin = Latch_SPI1_Pin;
+  /*Configure GPIO pins : LED_Pin Latch_SPI1_Pin */
+  GPIO_InitStruct.Pin = LED_Pin|Latch_SPI1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(Latch_SPI1_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pins : D0_Pin D1_Pin D2_Pin D3_Pin
                            D4_Pin */
@@ -420,12 +412,108 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
-	timerRun();
 
-}
 
 /* USER CODE END 4 */
+
+/* USER CODE BEGIN Header_SevenSegs_Handler */
+/**
+  * @brief  Function implementing the SevenSegs thread.
+  * @param  argument: Not used
+  * @retval None
+  */
+/* USER CODE END Header_SevenSegs_Handler */
+void SevenSegs_Handler(void const * argument)
+{
+  /* USER CODE BEGIN 5 */
+	int i=0;
+  /* Infinite loop */
+  for(;;)
+  {
+	uint8_t led_buffer[] = {0b11111111,digitMapWithDP[i%10],digitMapWithDP[(i+1)%10],digitMapWithDP[(i+2)%10]}; // Data to display '1' with DP
+	ShiftOut_SPI(led_buffer, 4);
+	i++;
+	osDelay(1000);
+  }
+
+  // In case we accidentally exit from task loop
+  osThreadTerminate(NULL);
+
+  /* USER CODE END 5 */
+}
+
+/* USER CODE BEGIN Header_KeyBoard_Handler */
+/**
+* @brief Function implementing the KeyBoard thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_KeyBoard_Handler */
+void KeyBoard_Handler(void const * argument)
+{
+  /* USER CODE BEGIN KeyBoard_Handler */
+  /* Infinite loop */
+  for(;;)
+  {
+	keyPressed = KeyPad_Scan();
+	if (keyPressed != 0xFF) // If a key is pressed
+	{
+		HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_2);
+
+	}
+    osDelay(100);
+  }
+
+  // In case we accidentally exit from task loop
+  osThreadTerminate(NULL);
+
+  /* USER CODE END KeyBoard_Handler */
+}
+
+/* USER CODE BEGIN Header_LCD_Handler */
+/**
+* @brief Function implementing the LCD thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_LCD_Handler */
+void LCD_Handler(void const * argument)
+{
+  /* USER CODE BEGIN LCD_Handler */
+  /* Infinite loop */
+  for(;;)
+  {
+    Update_LCD(lcd_num);
+    lcd_num*=2;
+    osDelay(1);
+  }
+
+  // In case we accidentally exit from task loop
+  osThreadTerminate(NULL);
+
+  /* USER CODE END LCD_Handler */
+}
+
+/**
+  * @brief  Period elapsed callback in non blocking mode
+  * @note   This function is called  when TIM3 interrupt took place, inside
+  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
+  * a global variable "uwTick" used as application time base.
+  * @param  htim : TIM handle
+  * @retval None
+  */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  /* USER CODE BEGIN Callback 0 */
+
+  /* USER CODE END Callback 0 */
+  if (htim->Instance == TIM3) {
+    HAL_IncTick();
+  }
+  /* USER CODE BEGIN Callback 1 */
+
+  /* USER CODE END Callback 1 */
+}
 
 /**
   * @brief  This function is executed in case of error occurrence.
