@@ -47,7 +47,7 @@ SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi2;
 TIM_HandleTypeDef htim2;
 
-uint32_t lcd_num=1;
+uint32_t lcd_num=0;
 /* USER CODE BEGIN PV */
 uint8_t keyPressed = 0xFF;
 /* USER CODE END PV */
@@ -173,19 +173,32 @@ int main(void)
 	  }
 	  if(timer_flag[1]==1){
 		  keyPressed = KeyPad_Scan();
-		  if (keyPressed != 0xFF) // If a key is pressed
-		  {
-			  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_2);
+//		  if (keyPressed != 0xFF) // If a key is pressed
+//		  {
+//			  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_2);
+//
+//		  }
 
+
+		  if(keyPressed<10){
+			  uint32_t temp=lcd_num*10+keyPressed;
+			  if(temp<=999999){
+				  lcd_num=temp;
+				  Update_LCD(lcd_num);
+			  }
 		  }
-		  setTimer(1,100);
+		  else if(keyPressed>=10 &&keyPressed<100){
+			  lcd_num=0;
+			  Update_LCD(lcd_num);
+		  }
+		  setTimer(1,10);
 	  }
-	  if(timer_flag[2]==1){
-
-		  Update_LCD(lcd_num);
-		  lcd_num*=2;
-		  setTimer(2,100);
-	  }
+//	  if(timer_flag[2]==1){
+//
+//		  Update_LCD(lcd_num);
+//		  lcd_num*=2;
+//		  setTimer(2,100);
+//	  }
 
 
 //	  ShiftOut(digitMapWithDP[0]);
