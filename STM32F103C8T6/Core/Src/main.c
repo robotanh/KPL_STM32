@@ -182,7 +182,7 @@ int main(void)
 
 		  if(keyPressed<10){
 			  uint32_t temp=lcd_num*10+keyPressed;
-			  if(temp<=999999){
+			  if(temp<=99999999){
 				  lcd_num=temp;
 				  Update_LCD(lcd_num);
 			  }

@@ -518,7 +518,7 @@ int main(void)
  80003fe:	781b      	ldrb	r3, [r3, #0]
  8000400:	4413      	add	r3, r2
  8000402:	60bb      	str	r3, [r7, #8]
-			  if(temp<=999999){
+			  if(temp<=99999999){
  8000404:	68bb      	ldr	r3, [r7, #8]
  8000406:	4a16      	ldr	r2, [pc, #88]	@ (8000460 <main+0x150>)
  8000408:	4293      	cmp	r3, r2
@@ -566,7 +566,7 @@ int main(void)
  8000454:	20000000 	.word	0x20000000
  8000458:	2000000a 	.word	0x2000000a
  800045c:	20000130 	.word	0x20000130
- 8000460:	000f423f 	.word	0x000f423f
+ 8000460:	05f5e0ff 	.word	0x05f5e0ff
 
 08000464 <SystemClock_Config>:
 /**
