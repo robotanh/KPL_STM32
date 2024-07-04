@@ -48,6 +48,8 @@ SPI_HandleTypeDef hspi2;
 TIM_HandleTypeDef htim2;
 
 uint32_t lcd_num=0;
+uint8_t SevenSegScanState=0;
+uint32_t SevenSegBuffer[3]={123456,654321,987654};
 /* USER CODE BEGIN PV */
 uint8_t keyPressed = 0xFF;
 /* USER CODE END PV */
@@ -93,6 +95,81 @@ void ShiftOut_LCD(uint8_t *data, size_t size)
     HAL_SPI_Transmit(&hspi1, data, size, 300); // Transmit data
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET); // Pull STCP (Latch) high
 }
+
+uint8_t* SevenSegLEDsHandler(uint32_t* buffer, uint8_t scan_state) {
+    static uint8_t output[3];
+    switch (scan_state) {
+        case 0:
+            output[0] = buffer[0] % 10;
+            output[1] = buffer[1] % 10;
+            output[2] = buffer[2] % 10;
+            break;
+        case 1:
+            output[0] = (buffer[0] / 10) % 10;
+            output[1] = (buffer[1] / 10) % 10;
+            output[2] = (buffer[2] / 10) % 10;
+            break;
+        case 2:
+            output[0] = (buffer[0] / 100) % 10;
+            output[1] = (buffer[1] / 100) % 10;
+            output[2] = (buffer[2] / 100) % 10;
+            break;
+        case 3:
+            output[0] = (buffer[0] / 1000) % 10;
+            output[1] = (buffer[1] / 1000) % 10;
+            output[2] = (buffer[2] / 1000) % 10;
+            break;
+        case 4:
+            output[0] = (buffer[0] / 10000) % 10;
+            output[1] = (buffer[1] / 10000) % 10;
+            output[2] = (buffer[2] / 10000) % 10;
+            break;
+        case 5:
+            output[0] = (buffer[0] / 100000) % 10;
+            output[1] = (buffer[1] / 100000) % 10;
+            output[2] = (buffer[2] / 100000) % 10;
+            break;
+    }
+    return output;
+}
+
+void SevenSegLEDsScan(){
+	uint8_t* curr_digit=SevenSegLEDsHandler(SevenSegBuffer,SevenSegScanState);
+	uint8_t curr_scan;
+	switch (SevenSegScanState) {
+		case 0:
+			curr_scan=0b00100000;
+			SevenSegScanState=1;
+			break;
+		case 1:
+			curr_scan=0b00010000;
+			SevenSegScanState=2;
+			break;
+		case 2:
+			curr_scan=0b00001000;
+			SevenSegScanState=3;
+			break;
+		case 3:
+			curr_scan=0b00000100;
+			SevenSegScanState=4;
+			break;
+		case 4:
+			curr_scan=0b00000010;
+			SevenSegScanState=5;
+			break;
+		case 5:
+			curr_scan=0b00000001;
+			SevenSegScanState=0;
+			break;
+		default:
+			curr_scan=0b00000001;
+			SevenSegScanState=0;
+			break;
+	}
+	uint8_t led_buffer[]={curr_scan,digitMap[curr_digit[2]],digitMap[curr_digit[1]],digitMap[curr_digit[0]]};
+	ShiftOut_SPI(led_buffer, 4);
+}
+
 
 uint8_t* Num_Buff_Conv(uint32_t num) {
     // Ensure the number is within the valid range
@@ -153,7 +230,6 @@ int main(void)
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim2);
-  int i=0;
   setTimer(0,100);
   setTimer(1,100);
   setTimer(2,100);
@@ -165,21 +241,16 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 
   while (1) {
+	  // TIMER 0 /////////////////////////////////////
 	  if(timer_flag[0]==1){
-		  uint8_t led_buffer[] = {0b11111111,digitMapWithDP[i%10],digitMapWithDP[(i+1)%10],digitMapWithDP[(i+2)%10]}; // Data to display '1' with DP
-		  ShiftOut_SPI(led_buffer, 4);
-		  i++;
-		  setTimer(0,100);
+
+		  SevenSegLEDsScan();
+		  setTimer(0,5);
 	  }
+
+	  // TIMER 1 /////////////////////////////////////
 	  if(timer_flag[1]==1){
 		  keyPressed = KeyPad_Scan();
-//		  if (keyPressed != 0xFF) // If a key is pressed
-//		  {
-//			  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_2);
-//
-//		  }
-
-
 		  if(keyPressed<10){
 			  uint32_t temp=lcd_num*10+keyPressed;
 			  if(temp<=99999999){
@@ -193,26 +264,19 @@ int main(void)
 		  }
 		  setTimer(1,10);
 	  }
-//	  if(timer_flag[2]==1){
-//
-//		  Update_LCD(lcd_num);
-//		  lcd_num*=2;
-//		  setTimer(2,100);
-//	  }
+
+	  // TIMER 2 /////////////////////////////////////
+	  if(timer_flag[2]==1){
+		  for(int i=0;i<3;i++){
+			  uint32_t temp=SevenSegBuffer[i]+1;
+			  if(temp<=999999){
+				  SevenSegBuffer[i]=temp;
+			  }
+		  }
+		  setTimer(2,100);
+	  }
 
 
-//	  ShiftOut(digitMapWithDP[0]);
-//	  HAL_Delay(1000);
-//	  ShiftOut(digitMapWithDP[1]);
-//	  HAL_Delay(1000);
-//	  ShiftOut(digitMapWithDP[2]);
-//	  HAL_Delay(1000);
-//	  ShiftOut(digitMapWithDP[3]);
-//	  HAL_Delay(1000);
-//	  ShiftOut(digitMapWithDP[4]);
-//	  HAL_Delay(1000);
-//	  ShiftOut(digitMapWithDP[5]);
-//	  HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
