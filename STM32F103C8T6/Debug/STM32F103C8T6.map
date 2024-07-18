@@ -3268,16 +3268,16 @@ LOAD C:/D/Coding/STM32CubeIDE/Application/STM32CubeIDE_1.15.1/STM32CubeIDE/plugi
  .data.SevenSegBuffer
                 0x2000000c        0xc ./Core/Src/LED3x6.o
                 0x2000000c                SevenSegBuffer
- .data.totalLiters
-                0x20000018        0x4 ./Core/Src/main.o
-                0x20000018                totalLiters
- .data.LEDPointFlag
-                0x2000001c        0x4 ./Core/Src/main.o
-                0x2000001c                LEDPointFlag
  .data.keyPressed
-                0x20000020        0x1 ./Core/Src/main.o
-                0x20000020                keyPressed
- *fill*         0x20000021        0x3 
+                0x20000018        0x1 ./Core/Src/main.o
+                0x20000018                keyPressed
+ *fill*         0x20000019        0x3 
+ .data.totalLiters
+                0x2000001c        0x4 ./Core/Src/main.o
+                0x2000001c                totalLiters
+ .data.LEDPointFlag
+                0x20000020        0x4 ./Core/Src/main.o
+                0x20000020                LEDPointFlag
  .data.SystemCoreClock
                 0x20000024        0x4 ./Core/Src/system_stm32f1xx.o
                 0x20000024                SystemCoreClock
