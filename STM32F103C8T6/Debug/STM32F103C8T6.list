@@ -21,31 +21,31 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
   8 .data         00000028  20000000  08002b38  00004000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  9 .bss          0000017c  20000028  08002b60  00004028  2**2
+  9 .bss          00000178  20000028  08002b60  00004028  2**2
                   ALLOC
- 10 ._user_heap_stack 00000604  200001a4  08002b60  000041a4  2**0
+ 10 ._user_heap_stack 00000600  200001a0  08002b60  000041a0  2**0
                   ALLOC
  11 .ARM.attributes 00000029  00000000  00000000  00004028  2**0
                   CONTENTS, READONLY
- 12 .debug_info   00009e74  00000000  00000000  00004051  2**0
+ 12 .debug_info   0000a4bc  00000000  00000000  00004051  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_abbrev 00001bf2  00000000  00000000  0000dec5  2**0
+ 13 .debug_abbrev 00001db3  00000000  00000000  0000e50d  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_aranges 00000bb8  00000000  00000000  0000fab8  2**3
+ 14 .debug_aranges 00000bd0  00000000  00000000  000102c0  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_rnglists 0000090b  00000000  00000000  00010670  2**0
+ 15 .debug_rnglists 00000918  00000000  00000000  00010e90  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_macro  00017758  00000000  00000000  00010f7b  2**0
+ 16 .debug_macro  00017914  00000000  00000000  000117a8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   0000c151  00000000  00000000  000286d3  2**0
+ 17 .debug_line   0000c823  00000000  00000000  000290bc  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    00089868  00000000  00000000  00034824  2**0
+ 18 .debug_str    00089879  00000000  00000000  000358df  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000043  00000000  00000000  000be08c  2**0
+ 19 .comment      00000043  00000000  00000000  000bf158  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00003060  00000000  00000000  000be0d0  2**2
+ 20 .debug_frame  00003070  00000000  00000000  000bf19c  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_line_str 0000007f  00000000  00000000  000c1130  2**0
+ 21 .debug_line_str 0000007f  00000000  00000000  000c220c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -735,13 +735,13 @@ void ShiftOut_SPI(uint8_t *data, size_t size)
  800059c:	bd80      	pop	{r7, pc}
  800059e:	bf00      	nop
  80005a0:	40010c00 	.word	0x40010c00
- 80005a4:	200000a8 	.word	0x200000a8
+ 80005a4:	200000ac 	.word	0x200000ac
 
 080005a8 <SevenSegLEDsHandler>:
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET); // Pull STCP (Latch) low
     HAL_SPI_Transmit(&hspi1, data, size, 300); // Transmit data
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET); // Pull STCP (Latch) high
 }
+
 
 uint8_t* SevenSegLEDsHandler(uint32_t* buffer, uint8_t scan_state) {
  80005a8:	b480      	push	{r7}
@@ -1105,13 +1105,14 @@ uint8_t* SevenSegLEDsHandler(uint32_t* buffer, uint8_t scan_state) {
  8000880:	4770      	bx	lr
  8000882:	bf00      	nop
  8000884:	cccccccd 	.word	0xcccccccd
- 8000888:	2000014c 	.word	0x2000014c
+ 8000888:	20000050 	.word	0x20000050
  800088c:	51eb851f 	.word	0x51eb851f
  8000890:	10624dd3 	.word	0x10624dd3
  8000894:	d1b71759 	.word	0xd1b71759
  8000898:	0a7c5ac5 	.word	0x0a7c5ac5
 
 0800089c <SevenSegLEDsScan>:
+
 
 void SevenSegLEDsScan(){
  800089c:	b580      	push	{r7, lr}
@@ -1244,7 +1245,7 @@ void SevenSegLEDsScan(){
  8000966:	46bd      	mov	sp, r7
  8000968:	bd80      	pop	{r7, pc}
  800096a:	bf00      	nop
- 800096c:	20000148 	.word	0x20000148
+ 800096c:	2000004e 	.word	0x2000004e
  8000970:	2000000c 	.word	0x2000000c
  8000974:	20000000 	.word	0x20000000
 
@@ -1335,8 +1336,8 @@ int main(void)
  80009da:	f000 fa79 	bl	8000ed0 <setTimer>
 	  if(timer_flag[0]==1){
  80009de:	e7e8      	b.n	80009b2 <main+0x3a>
- 80009e0:	20000100 	.word	0x20000100
- 80009e4:	20000178 	.word	0x20000178
+ 80009e0:	20000104 	.word	0x20000104
+ 80009e4:	20000174 	.word	0x20000174
 
 080009e8 <SystemClock_Config>:
 /**
@@ -1507,7 +1508,7 @@ static void MX_SPI1_Init(void)
 }
  8000ac0:	bf00      	nop
  8000ac2:	bd80      	pop	{r7, pc}
- 8000ac4:	20000050 	.word	0x20000050
+ 8000ac4:	20000054 	.word	0x20000054
  8000ac8:	40013000 	.word	0x40013000
 
 08000acc <MX_SPI2_Init>:
@@ -1589,7 +1590,7 @@ static void MX_SPI2_Init(void)
 }
  8000b2c:	bf00      	nop
  8000b2e:	bd80      	pop	{r7, pc}
- 8000b30:	200000a8 	.word	0x200000a8
+ 8000b30:	200000ac 	.word	0x200000ac
  8000b34:	40003800 	.word	0x40003800
 
 08000b38 <MX_TIM2_Init>:
@@ -1699,7 +1700,7 @@ static void MX_TIM2_Init(void)
  8000bc6:	3718      	adds	r7, #24
  8000bc8:	46bd      	mov	sp, r7
  8000bca:	bd80      	pop	{r7, pc}
- 8000bcc:	20000100 	.word	0x20000100
+ 8000bcc:	20000104 	.word	0x20000104
 
 08000bd0 <MX_GPIO_Init>:
   * @brief GPIO Initialization Function
@@ -2326,7 +2327,7 @@ void TIM2_IRQHandler(void)
  8000eba:	bf00      	nop
  8000ebc:	bd80      	pop	{r7, pc}
  8000ebe:	bf00      	nop
- 8000ec0:	20000100 	.word	0x20000100
+ 8000ec0:	20000104 	.word	0x20000104
 
 08000ec4 <SystemInit>:
   * @note   This function should be used only after reset.
@@ -2376,8 +2377,8 @@ void setTimer(int INDEX,int duration){
  8000ef2:	46bd      	mov	sp, r7
  8000ef4:	bc80      	pop	{r7}
  8000ef6:	4770      	bx	lr
- 8000ef8:	20000150 	.word	0x20000150
- 8000efc:	20000178 	.word	0x20000178
+ 8000ef8:	2000014c 	.word	0x2000014c
+ 8000efc:	20000174 	.word	0x20000174
 
 08000f00 <timerRun>:
 
@@ -2431,8 +2432,8 @@ void timerRun(){
  8000f52:	46bd      	mov	sp, r7
  8000f54:	bc80      	pop	{r7}
  8000f56:	4770      	bx	lr
- 8000f58:	20000150 	.word	0x20000150
- 8000f5c:	20000178 	.word	0x20000178
+ 8000f58:	2000014c 	.word	0x2000014c
+ 8000f5c:	20000174 	.word	0x20000174
 
 08000f60 <Reset_Handler>:
  8000f60:	f7ff ffb0 	bl	8000ec4 <SystemInit>
@@ -2470,7 +2471,7 @@ void timerRun(){
  8000f98:	20000028 	.word	0x20000028
  8000f9c:	08002b38 	.word	0x08002b38
  8000fa0:	20000028 	.word	0x20000028
- 8000fa4:	200001a4 	.word	0x200001a4
+ 8000fa4:	200001a0 	.word	0x200001a0
 
 08000fa8 <ADC1_2_IRQHandler>:
  8000fa8:	e7fe      	b.n	8000fa8 <ADC1_2_IRQHandler>
@@ -2552,7 +2553,7 @@ void timerRun(){
  8001050:	bc80      	pop	{r7}
  8001052:	4770      	bx	lr
  8001054:	20000024 	.word	0x20000024
- 8001058:	200001a0 	.word	0x200001a0
+ 8001058:	2000019c 	.word	0x2000019c
 
 0800105c <HAL_GetTick>:
  800105c:	b480      	push	{r7}
@@ -2563,7 +2564,7 @@ void timerRun(){
  8001066:	46bd      	mov	sp, r7
  8001068:	bc80      	pop	{r7}
  800106a:	4770      	bx	lr
- 800106c:	200001a0 	.word	0x200001a0
+ 800106c:	2000019c 	.word	0x2000019c
 
 08001070 <__NVIC_SetPriorityGrouping>:
  8001070:	b480      	push	{r7}

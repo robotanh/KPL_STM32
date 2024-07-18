@@ -35,6 +35,11 @@ extern uint32_t SevenSegBuffer[3];
 
 extern uint32_t lcd_num;
 extern uint8_t keyPressed;
+
+
+extern SPI_HandleTypeDef hspi1;
+extern SPI_HandleTypeDef hspi2;
+extern TIM_HandleTypeDef htim2;
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

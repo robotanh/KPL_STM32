@@ -1,0 +1,7 @@
+../Core/Src/LED3x6.c:42:6:ShiftOut	3
+../Core/Src/LED3x6.c:55:6:ShiftOut_SPI	1
+../Core/Src/LED3x6.c:64:6:ShiftOut_LCD	1
+../Core/Src/LED3x6.c:72:10:SevenSegLEDsHandler	7
+../Core/Src/LED3x6.c:110:6:SevenSegLEDsScan	7
+../Core/Src/LED3x6.c:147:10:Num_Buff_Conv	3
+../Core/Src/LED3x6.c:162:6:Update_LCD	2
