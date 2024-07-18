@@ -49,7 +49,7 @@ TIM_HandleTypeDef htim2;
 
 uint32_t lcd_num=0;
 uint8_t SevenSegScanState=0;
-uint32_t SevenSegBuffer[3]={123456,654321,987654};
+uint32_t SevenSegBuffer[3]={0,0,0};
 /* USER CODE BEGIN PV */
 uint8_t keyPressed = 0xFF;
 /* USER CODE END PV */
@@ -250,31 +250,37 @@ int main(void)
 
 	  // TIMER 1 /////////////////////////////////////
 	  if(timer_flag[1]==1){
+		  //////////////////////////////////////////////////TODO (1) IF USING LCD/////////////////////////////////////////////////////////
+		  //////////////////////////////////////////////TODO (2) IF TESTING 3X6 LEDS//////////////////////////////////////////////////////
 		  keyPressed = KeyPad_Scan();
 		  if(keyPressed<10){
-			  uint32_t temp=lcd_num*10+keyPressed;
+//			  uint32_t temp=lcd_num*10+keyPressed; //  			TODO (1) UNCOMMENT IF USING LCD
+			  uint32_t temp=SevenSegBuffer[0]*10+keyPressed; //	TODO (2) UNCOMMENT IF TESTING 3X6 LEDS
 			  if(temp<=99999999){
 				  lcd_num=temp;
-				  Update_LCD(lcd_num);
+//				  Update_LCD(lcd_num); // 						TODO (1) UNCOMMENT IF USING LCD
+				  SevenSegBuffer[0]=temp; //					TODO (2) UNCOMMENT IF TESTING 3X6 LEDS
 			  }
 		  }
 		  else if(keyPressed>=10 &&keyPressed<100){
-			  lcd_num=0;
-			  Update_LCD(lcd_num);
+//			  lcd_num=0; //										TODO (1) UNCOMMENT IF USING LCD
+//			  Update_LCD(lcd_num); // 							TODO (1) UNCOMMENT IF USING LCD
+			  SevenSegBuffer[0]=0; //							TODO (2) UNCOMMENT IF TESTING 3X6 LEDS
+
 		  }
 		  setTimer(1,10);
 	  }
 
 	  // TIMER 2 /////////////////////////////////////
-	  if(timer_flag[2]==1){
-		  for(int i=0;i<3;i++){
-			  uint32_t temp=SevenSegBuffer[i]+1;
-			  if(temp<=999999){
-				  SevenSegBuffer[i]=temp;
-			  }
-		  }
-		  setTimer(2,100);
-	  }
+//	  if(timer_flag[2]==1){
+//		  for(int i=0;i<3;i++){
+//			  uint32_t temp=SevenSegBuffer[i]+1;
+//			  if(temp<=999999){
+//				  SevenSegBuffer[i]=temp;
+//			  }
+//		  }
+//		  setTimer(2,100);
+//	  }
 
 
     /* USER CODE END WHILE */
