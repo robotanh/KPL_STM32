@@ -38,7 +38,8 @@ uint8_t digitMapWithDP[10] = {
 
 uint8_t SevenSegScanState=0;
 uint32_t SevenSegBuffer[3]={123456, 654321, 987654};
-
+uint8_t displayBuffer[5];  // Double buffer
+volatile uint8_t currentBufferIndex = 0;
 
 uint8_t* SevenSegLEDsHandler(uint32_t* buffer, uint8_t scan_state) {
     static uint8_t output[3];
@@ -77,42 +78,63 @@ uint8_t* SevenSegLEDsHandler(uint32_t* buffer, uint8_t scan_state) {
     return output;
 }
 
-
-void SevenSegLEDsScan(){
-	uint8_t* curr_digit=SevenSegLEDsHandler(SevenSegBuffer,SevenSegScanState);
+void UpdateDisplayBuffer(uint32_t* buffer, uint8_t scan_state ) {
+	uint8_t* curr_digit=SevenSegLEDsHandler(buffer,scan_state);
 	uint8_t curr_scan;
-	switch (SevenSegScanState) {
+	switch (scan_state) {
 		case 0:
 			curr_scan=0b00100000;
-			SevenSegScanState=1;
 			break;
 		case 1:
 			curr_scan=0b00010000;
-			SevenSegScanState=2;
 			break;
 		case 2:
 			curr_scan=0b00001000;
-			SevenSegScanState=3;
 			break;
 		case 3:
 			curr_scan=0b00000100;
-			SevenSegScanState=4;
 			break;
 		case 4:
 			curr_scan=0b00000010;
-			SevenSegScanState=5;
 			break;
 		case 5:
 			curr_scan=0b00000001;
-			SevenSegScanState=0;
 			break;
 		default:
 			curr_scan=0b00000001;
-			SevenSegScanState=0;
 			break;
 	}
-	uint8_t led_buffer[]={curr_scan,digitMapWithOutDP[curr_digit[2]],digitMapWithOutDP[curr_digit[1]],digitMapWithOutDP[curr_digit[0]]};
-	ShiftOut_SPI(led_buffer, 4);
+	if(LEDPointFlag >=0 && LEDPointFlag <=5){
+	    	if (scan_state == LEDPointFlag){
+				displayBuffer[0] = curr_scan;
+				displayBuffer[1] = digitMapWithOutDP[curr_digit[2]];
+				displayBuffer[2] = digitMapWithDP[curr_digit[1]]; //Add point to second row
+				displayBuffer[3] = digitMapWithOutDP[curr_digit[0]];
+	    	}
+	    	else
+	    	{
+	    		displayBuffer[0] = curr_scan;
+	    		displayBuffer[1] = digitMapWithOutDP[curr_digit[2]];
+	    		displayBuffer[2] = digitMapWithOutDP[curr_digit[1]];
+	    		displayBuffer[3] = digitMapWithOutDP[curr_digit[0]];
+	    	}
+	    }
+	    else
+	    {
+			displayBuffer[0] = curr_scan;
+			displayBuffer[1] = digitMapWithOutDP[curr_digit[2]];
+			displayBuffer[2] = digitMapWithOutDP[curr_digit[1]];
+			displayBuffer[3] = digitMapWithOutDP[curr_digit[0]];
+	    }
+}
+
+//
+void SevenSegLEDsScan(){
+//	uint8_t bufferIndex = (currentBufferIndex + 1) % 2;
+	UpdateDisplayBuffer(SevenSegBuffer, SevenSegScanState);
+	ShiftOut_SPI(displayBuffer, 4);
+//    currentBufferIndex = bufferIndex;  // Swap buffers
+    SevenSegScanState = (SevenSegScanState + 1) % 6;
 }
 
 
