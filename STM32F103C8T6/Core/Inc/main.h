@@ -31,7 +31,10 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+extern uint32_t SevenSegBuffer[3];
 
+extern uint32_t lcd_num;
+extern uint8_t keyPressed;
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

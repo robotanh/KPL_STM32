@@ -1,2 +1,4 @@
-../Core/Src/KeyPad.c:33:6:KeyPad_Init	8	static
-../Core/Src/KeyPad.c:54:9:KeyPad_Scan	16	static
+../Core/Src/KeyPad.c:46:6:KeyPad_Init	8	static
+../Core/Src/KeyPad.c:67:9:KeyPad_Scan	16	static
+../Core/Src/KeyPad.c:94:6:KeyLogic	8	static
+../Core/Src/KeyPad.c:180:6:KeyLogic_Action	4	static
