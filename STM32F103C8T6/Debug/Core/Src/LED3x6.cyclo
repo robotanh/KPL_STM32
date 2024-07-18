@@ -1,2 +1,2 @@
-../Core/Src/LED3x6.c:88:10:SevenSegLEDsHandler	7
-../Core/Src/LED3x6.c:126:6:SevenSegLEDsScan	7
+../Core/Src/LED3x6.c:43:10:SevenSegLEDsHandler	7
+../Core/Src/LED3x6.c:81:6:SevenSegLEDsScan	7

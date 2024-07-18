@@ -27,25 +27,25 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000029  00000000  00000000  00004030  2**0
                   CONTENTS, READONLY
- 12 .debug_info   0000a539  00000000  00000000  00004059  2**0
+ 12 .debug_info   0000a525  00000000  00000000  00004059  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_abbrev 00001e10  00000000  00000000  0000e592  2**0
+ 13 .debug_abbrev 00001e0d  00000000  00000000  0000e57e  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_aranges 00000bd0  00000000  00000000  000103a8  2**3
+ 14 .debug_aranges 00000bd0  00000000  00000000  00010390  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_rnglists 00000912  00000000  00000000  00010f78  2**0
+ 15 .debug_rnglists 00000912  00000000  00000000  00010f60  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_macro  00017ade  00000000  00000000  0001188a  2**0
+ 16 .debug_macro  00017ade  00000000  00000000  00011872  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   0000ce72  00000000  00000000  00029368  2**0
+ 17 .debug_line   0000ce71  00000000  00000000  00029350  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    000898cc  00000000  00000000  000361da  2**0
+ 18 .debug_str    000898c4  00000000  00000000  000361c1  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000043  00000000  00000000  000bfaa6  2**0
+ 19 .comment      00000043  00000000  00000000  000bfa85  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00003010  00000000  00000000  000bfaec  2**2
+ 20 .debug_frame  00003010  00000000  00000000  000bfac8  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_line_str 0000007f  00000000  00000000  000c2afc  2**0
+ 21 .debug_line_str 0000007f  00000000  00000000  000c2ad8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -781,10 +781,10 @@ void KeyLogic_Action() {
  80005f8:	2000001c 	.word	0x2000001c
 
 080005fc <SevenSegLEDsHandler>:
-//		return;
-//	}
-//	ShiftOut_LCD(buffer,8);
-//}
+
+uint8_t SevenSegScanState=0;
+uint32_t SevenSegBuffer[3]={123456, 654321, 987654};
+
 
 uint8_t* SevenSegLEDsHandler(uint32_t* buffer, uint8_t scan_state) {
  80005fc:	b480      	push	{r7}

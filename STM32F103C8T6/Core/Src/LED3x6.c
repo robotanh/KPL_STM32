@@ -36,54 +36,9 @@ uint8_t digitMapWithDP[10] = {
     0b00010000  // 9 with DP
 };
 
-uint32_t lcd_num=0;
 uint8_t SevenSegScanState=0;
 uint32_t SevenSegBuffer[3]={123456, 654321, 987654};
 
-//void ShiftOut(uint8_t data)
-//{
-//	uint8_t temp;
-//	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);
-//	for(int i=0;i<8;i++){
-//		temp = data & (0x80 >> i);
-//		if(temp == 0) HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_RESET);
-//		else HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
-//		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_SET);
-//		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
-//	}
-//	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);
-//}
-//
-//
-//void ShiftOut_LCD(uint8_t *data, size_t size)
-//{
-//    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET); // Pull STCP (Latch) low
-//    HAL_SPI_Transmit(&hspi1, data, size, 300); // Transmit data
-//    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET); // Pull STCP (Latch) high
-//}
-//
-//uint8_t* Num_Buff_Conv(uint32_t num) {
-//    // Ensure the number is within the valid range
-//    if (num > 99999999) {
-//        return NULL; // Return NULL for invalid input
-//    }
-//
-//    static uint8_t output[8]; // Static array to hold the result
-//    for (int i = 0; i < 8; i++) {
-//        output[i] = digitMapWithDP[num % 10]; // Get the least significant digit
-//        num /= 10;            // Remove the least significant digit from the number
-//    }
-//
-//    return output;
-//}
-//
-//void Update_LCD(uint32_t num){
-//	uint8_t* buffer=Num_Buff_Conv(num);
-//	if(buffer==NULL){
-//		return;
-//	}
-//	ShiftOut_LCD(buffer,8);
-//}
 
 uint8_t* SevenSegLEDsHandler(uint32_t* buffer, uint8_t scan_state) {
     static uint8_t output[3];
