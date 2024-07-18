@@ -17,12 +17,12 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include <LED3x6.h>
 #include "main.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
-#include "LED_Screen.h"
 #include "timer.h"
 #include "KeyPad.h"
 /* USER CODE END Includes */
@@ -47,11 +47,13 @@ SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi2;
 TIM_HandleTypeDef htim2;
 
-uint32_t lcd_num=0;
-uint8_t SevenSegScanState=0;
-uint32_t SevenSegBuffer[3]={0,0,0};
+
+
 /* USER CODE BEGIN PV */
 uint8_t keyPressed = 0xFF;
+uint32_t password = 345;
+uint32_t totalLiters = 68123450;
+int LEDPointFlag = 6; //No LEDs have point
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -61,138 +63,17 @@ static void MX_SPI2_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_SPI1_Init(void);
 /* USER CODE BEGIN PFP */
-void ShiftOut(uint8_t data);
-void ShiftOut_SPI(uint8_t *data, size_t size);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void ShiftOut(uint8_t data)
-{
-	uint8_t temp;
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);
-	for(int i=0;i<8;i++){
-		temp = data & (0x80 >> i);
-		if(temp == 0) HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_RESET);
-		else HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
-	}
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);
-}
-void ShiftOut_SPI(uint8_t *data, size_t size)
-{
-
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET); // Pull STCP (Latch) low
-    HAL_SPI_Transmit(&hspi2, data, size, 300); // Transmit data
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET); // Pull STCP (Latch) high
-
-}
-
-void ShiftOut_LCD(uint8_t *data, size_t size)
-{
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET); // Pull STCP (Latch) low
-    HAL_SPI_Transmit(&hspi1, data, size, 300); // Transmit data
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET); // Pull STCP (Latch) high
-}
-
-uint8_t* SevenSegLEDsHandler(uint32_t* buffer, uint8_t scan_state) {
-    static uint8_t output[3];
-    switch (scan_state) {
-        case 0:
-            output[0] = buffer[0] % 10;
-            output[1] = buffer[1] % 10;
-            output[2] = buffer[2] % 10;
-            break;
-        case 1:
-            output[0] = (buffer[0] / 10) % 10;
-            output[1] = (buffer[1] / 10) % 10;
-            output[2] = (buffer[2] / 10) % 10;
-            break;
-        case 2:
-            output[0] = (buffer[0] / 100) % 10;
-            output[1] = (buffer[1] / 100) % 10;
-            output[2] = (buffer[2] / 100) % 10;
-            break;
-        case 3:
-            output[0] = (buffer[0] / 1000) % 10;
-            output[1] = (buffer[1] / 1000) % 10;
-            output[2] = (buffer[2] / 1000) % 10;
-            break;
-        case 4:
-            output[0] = (buffer[0] / 10000) % 10;
-            output[1] = (buffer[1] / 10000) % 10;
-            output[2] = (buffer[2] / 10000) % 10;
-            break;
-        case 5:
-            output[0] = (buffer[0] / 100000) % 10;
-            output[1] = (buffer[1] / 100000) % 10;
-            output[2] = (buffer[2] / 100000) % 10;
-            break;
-    }
-    return output;
-}
-
-void SevenSegLEDsScan(){
-	uint8_t* curr_digit=SevenSegLEDsHandler(SevenSegBuffer,SevenSegScanState);
-	uint8_t curr_scan;
-	switch (SevenSegScanState) {
-		case 0:
-			curr_scan=0b00100000;
-			SevenSegScanState=1;
-			break;
-		case 1:
-			curr_scan=0b00010000;
-			SevenSegScanState=2;
-			break;
-		case 2:
-			curr_scan=0b00001000;
-			SevenSegScanState=3;
-			break;
-		case 3:
-			curr_scan=0b00000100;
-			SevenSegScanState=4;
-			break;
-		case 4:
-			curr_scan=0b00000010;
-			SevenSegScanState=5;
-			break;
-		case 5:
-			curr_scan=0b00000001;
-			SevenSegScanState=0;
-			break;
-		default:
-			curr_scan=0b00000001;
-			SevenSegScanState=0;
-			break;
-	}
-	uint8_t led_buffer[]={curr_scan,digitMap[curr_digit[2]],digitMap[curr_digit[1]],digitMap[curr_digit[0]]};
-	ShiftOut_SPI(led_buffer, 4);
-}
 
 
-uint8_t* Num_Buff_Conv(uint32_t num) {
-    // Ensure the number is within the valid range
-    if (num > 99999999) {
-        return NULL; // Return NULL for invalid input
-    }
 
-    static uint8_t output[8]; // Static array to hold the result
-    for (int i = 0; i < 8; i++) {
-        output[i] = digitMapWithDP[num % 10]; // Get the least significant digit
-        num /= 10;            // Remove the least significant digit from the number
-    }
 
-    return output;
-}
 
-void Update_LCD(uint32_t num){
-	uint8_t* buffer=Num_Buff_Conv(num);
-	if(buffer==NULL){
-		return;
-	}
-	ShiftOut_LCD(buffer,8);
-}
+
+
 
 /* USER CODE END 0 */
 
@@ -250,24 +131,8 @@ int main(void)
 
 	  // TIMER 1 /////////////////////////////////////
 	  if(timer_flag[1]==1){
-		  //////////////////////////////////////////////////TODO (1) IF USING LCD/////////////////////////////////////////////////////////
-		  //////////////////////////////////////////////TODO (2) IF TESTING 3X6 LEDS//////////////////////////////////////////////////////
-		  keyPressed = KeyPad_Scan();
-		  if(keyPressed<10){
-//			  uint32_t temp=lcd_num*10+keyPressed; //  			TODO (1) UNCOMMENT IF USING LCD
-			  uint32_t temp=SevenSegBuffer[0]*10+keyPressed; //	TODO (2) UNCOMMENT IF TESTING 3X6 LEDS
-			  if(temp<=99999999){
-				  lcd_num=temp;
-//				  Update_LCD(lcd_num); // 						TODO (1) UNCOMMENT IF USING LCD
-				  SevenSegBuffer[0]=temp; //					TODO (2) UNCOMMENT IF TESTING 3X6 LEDS
-			  }
-		  }
-		  else if(keyPressed>=10 &&keyPressed<100){
-//			  lcd_num=0; //										TODO (1) UNCOMMENT IF USING LCD
-//			  Update_LCD(lcd_num); // 							TODO (1) UNCOMMENT IF USING LCD
-			  SevenSegBuffer[0]=0; //							TODO (2) UNCOMMENT IF TESTING 3X6 LEDS
-
-		  }
+		  KeyLogic();
+		  KeyLogic_Action();
 		  setTimer(1,10);
 	  }
 

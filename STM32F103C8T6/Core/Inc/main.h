@@ -31,7 +31,17 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+extern uint32_t SevenSegBuffer[3];
+extern uint32_t password;
+extern uint32_t lcd_num;
+extern uint8_t keyPressed;
+extern uint32_t totalLiters;
 
+extern int LEDPointFlag; // 0 -> 5 to choose which LED has point
+
+extern SPI_HandleTypeDef hspi1;
+extern SPI_HandleTypeDef hspi2;
+extern TIM_HandleTypeDef htim2;
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

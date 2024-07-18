@@ -1,4 +1,5 @@
-Core/Src/KeyPad.o: ../Core/Src/KeyPad.c ../Core/Inc/KeyPad.h \
+Core/Src/LED3x6.o: ../Core/Src/LED3x6.c ../Core/Inc/LED3x6.h \
+ ../Core/Inc/SPI_shift.h ../Core/Inc/main.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
  ../Core/Inc/stm32f1xx_hal_conf.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h \
@@ -25,7 +26,9 @@ Core/Src/KeyPad.o: ../Core/Src/KeyPad.c ../Core/Inc/KeyPad.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h \
  ../Core/Inc/main.h
-../Core/Inc/KeyPad.h:
+../Core/Inc/LED3x6.h:
+../Core/Inc/SPI_shift.h:
+../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 ../Core/Inc/stm32f1xx_hal_conf.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h:
