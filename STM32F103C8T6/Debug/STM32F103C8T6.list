@@ -27,25 +27,25 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000029  00000000  00000000  00004028  2**0
                   CONTENTS, READONLY
- 12 .debug_info   0000a4bc  00000000  00000000  00004051  2**0
+ 12 .debug_info   0000a475  00000000  00000000  00004051  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_abbrev 00001db3  00000000  00000000  0000e50d  2**0
+ 13 .debug_abbrev 00001df6  00000000  00000000  0000e4c6  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_aranges 00000bd0  00000000  00000000  000102c0  2**3
+ 14 .debug_aranges 00000bc8  00000000  00000000  000102c0  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_rnglists 00000918  00000000  00000000  00010e90  2**0
+ 15 .debug_rnglists 0000090c  00000000  00000000  00010e88  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_macro  00017914  00000000  00000000  000117a8  2**0
+ 16 .debug_macro  00017ade  00000000  00000000  00011794  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   0000c823  00000000  00000000  000290bc  2**0
+ 17 .debug_line   0000ce37  00000000  00000000  00029272  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    00089879  00000000  00000000  000358df  2**0
+ 18 .debug_str    00089874  00000000  00000000  000360a9  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000043  00000000  00000000  000bf158  2**0
+ 19 .comment      00000043  00000000  00000000  000bf91d  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00003070  00000000  00000000  000bf19c  2**2
+ 20 .debug_frame  00002fec  00000000  00000000  000bf960  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_line_str 0000007f  00000000  00000000  000c220c  2**0
+ 21 .debug_line_str 0000007f  00000000  00000000  000c294c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -697,93 +697,88 @@ void KeyLogic_Action() {
  800055c:	0006c81c 	.word	0x0006c81c
  8000560:	20000048 	.word	0x20000048
 
-08000564 <ShiftOut_SPI>:
-		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
-	}
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);
-}
-void ShiftOut_SPI(uint8_t *data, size_t size)
-{
- 8000564:	b580      	push	{r7, lr}
- 8000566:	b082      	sub	sp, #8
- 8000568:	af00      	add	r7, sp, #0
- 800056a:	6078      	str	r0, [r7, #4]
- 800056c:	6039      	str	r1, [r7, #0]
-
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET); // Pull STCP (Latch) low
- 800056e:	2200      	movs	r2, #0
- 8000570:	f44f 4180 	mov.w	r1, #16384	@ 0x4000
- 8000574:	480a      	ldr	r0, [pc, #40]	@ (80005a0 <ShiftOut_SPI+0x3c>)
- 8000576:	f001 f824 	bl	80015c2 <HAL_GPIO_WritePin>
-    HAL_SPI_Transmit(&hspi2, data, size, 300); // Transmit data
- 800057a:	683b      	ldr	r3, [r7, #0]
- 800057c:	b29a      	uxth	r2, r3
- 800057e:	f44f 7396 	mov.w	r3, #300	@ 0x12c
- 8000582:	6879      	ldr	r1, [r7, #4]
- 8000584:	4807      	ldr	r0, [pc, #28]	@ (80005a4 <ShiftOut_SPI+0x40>)
- 8000586:	f001 fc97 	bl	8001eb8 <HAL_SPI_Transmit>
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET); // Pull STCP (Latch) high
- 800058a:	2201      	movs	r2, #1
- 800058c:	f44f 4180 	mov.w	r1, #16384	@ 0x4000
- 8000590:	4803      	ldr	r0, [pc, #12]	@ (80005a0 <ShiftOut_SPI+0x3c>)
- 8000592:	f001 f816 	bl	80015c2 <HAL_GPIO_WritePin>
-
-}
- 8000596:	bf00      	nop
- 8000598:	3708      	adds	r7, #8
- 800059a:	46bd      	mov	sp, r7
- 800059c:	bd80      	pop	{r7, pc}
- 800059e:	bf00      	nop
- 80005a0:	40010c00 	.word	0x40010c00
- 80005a4:	200000ac 	.word	0x200000ac
-
-080005a8 <SevenSegLEDsHandler>:
-    HAL_SPI_Transmit(&hspi1, data, size, 300); // Transmit data
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET); // Pull STCP (Latch) high
-}
-
+08000564 <SevenSegLEDsHandler>:
+//		return;
+//	}
+//	ShiftOut_LCD(buffer,8);
+//}
 
 uint8_t* SevenSegLEDsHandler(uint32_t* buffer, uint8_t scan_state) {
- 80005a8:	b480      	push	{r7}
- 80005aa:	b083      	sub	sp, #12
- 80005ac:	af00      	add	r7, sp, #0
- 80005ae:	6078      	str	r0, [r7, #4]
- 80005b0:	460b      	mov	r3, r1
- 80005b2:	70fb      	strb	r3, [r7, #3]
+ 8000564:	b480      	push	{r7}
+ 8000566:	b083      	sub	sp, #12
+ 8000568:	af00      	add	r7, sp, #0
+ 800056a:	6078      	str	r0, [r7, #4]
+ 800056c:	460b      	mov	r3, r1
+ 800056e:	70fb      	strb	r3, [r7, #3]
     static uint8_t output[3];
     switch (scan_state) {
- 80005b4:	78fb      	ldrb	r3, [r7, #3]
- 80005b6:	2b05      	cmp	r3, #5
- 80005b8:	f200 815d 	bhi.w	8000876 <SevenSegLEDsHandler+0x2ce>
- 80005bc:	a201      	add	r2, pc, #4	@ (adr r2, 80005c4 <SevenSegLEDsHandler+0x1c>)
- 80005be:	f852 f023 	ldr.w	pc, [r2, r3, lsl #2]
- 80005c2:	bf00      	nop
- 80005c4:	080005dd 	.word	0x080005dd
- 80005c8:	08000637 	.word	0x08000637
- 80005cc:	080006a9 	.word	0x080006a9
- 80005d0:	0800071b 	.word	0x0800071b
- 80005d4:	0800078d 	.word	0x0800078d
- 80005d8:	080007ff 	.word	0x080007ff
+ 8000570:	78fb      	ldrb	r3, [r7, #3]
+ 8000572:	2b05      	cmp	r3, #5
+ 8000574:	f200 815d 	bhi.w	8000832 <SevenSegLEDsHandler+0x2ce>
+ 8000578:	a201      	add	r2, pc, #4	@ (adr r2, 8000580 <SevenSegLEDsHandler+0x1c>)
+ 800057a:	f852 f023 	ldr.w	pc, [r2, r3, lsl #2]
+ 800057e:	bf00      	nop
+ 8000580:	08000599 	.word	0x08000599
+ 8000584:	080005f3 	.word	0x080005f3
+ 8000588:	08000665 	.word	0x08000665
+ 800058c:	080006d7 	.word	0x080006d7
+ 8000590:	08000749 	.word	0x08000749
+ 8000594:	080007bb 	.word	0x080007bb
         case 0:
             output[0] = buffer[0] % 10;
- 80005dc:	687b      	ldr	r3, [r7, #4]
- 80005de:	6819      	ldr	r1, [r3, #0]
- 80005e0:	4ba8      	ldr	r3, [pc, #672]	@ (8000884 <SevenSegLEDsHandler+0x2dc>)
- 80005e2:	fba3 2301 	umull	r2, r3, r3, r1
- 80005e6:	08da      	lsrs	r2, r3, #3
- 80005e8:	4613      	mov	r3, r2
- 80005ea:	009b      	lsls	r3, r3, #2
- 80005ec:	4413      	add	r3, r2
- 80005ee:	005b      	lsls	r3, r3, #1
- 80005f0:	1aca      	subs	r2, r1, r3
- 80005f2:	b2d2      	uxtb	r2, r2
- 80005f4:	4ba4      	ldr	r3, [pc, #656]	@ (8000888 <SevenSegLEDsHandler+0x2e0>)
- 80005f6:	701a      	strb	r2, [r3, #0]
+ 8000598:	687b      	ldr	r3, [r7, #4]
+ 800059a:	6819      	ldr	r1, [r3, #0]
+ 800059c:	4ba8      	ldr	r3, [pc, #672]	@ (8000840 <SevenSegLEDsHandler+0x2dc>)
+ 800059e:	fba3 2301 	umull	r2, r3, r3, r1
+ 80005a2:	08da      	lsrs	r2, r3, #3
+ 80005a4:	4613      	mov	r3, r2
+ 80005a6:	009b      	lsls	r3, r3, #2
+ 80005a8:	4413      	add	r3, r2
+ 80005aa:	005b      	lsls	r3, r3, #1
+ 80005ac:	1aca      	subs	r2, r1, r3
+ 80005ae:	b2d2      	uxtb	r2, r2
+ 80005b0:	4ba4      	ldr	r3, [pc, #656]	@ (8000844 <SevenSegLEDsHandler+0x2e0>)
+ 80005b2:	701a      	strb	r2, [r3, #0]
             output[1] = buffer[1] % 10;
- 80005f8:	687b      	ldr	r3, [r7, #4]
- 80005fa:	3304      	adds	r3, #4
- 80005fc:	6819      	ldr	r1, [r3, #0]
- 80005fe:	4ba1      	ldr	r3, [pc, #644]	@ (8000884 <SevenSegLEDsHandler+0x2dc>)
+ 80005b4:	687b      	ldr	r3, [r7, #4]
+ 80005b6:	3304      	adds	r3, #4
+ 80005b8:	6819      	ldr	r1, [r3, #0]
+ 80005ba:	4ba1      	ldr	r3, [pc, #644]	@ (8000840 <SevenSegLEDsHandler+0x2dc>)
+ 80005bc:	fba3 2301 	umull	r2, r3, r3, r1
+ 80005c0:	08da      	lsrs	r2, r3, #3
+ 80005c2:	4613      	mov	r3, r2
+ 80005c4:	009b      	lsls	r3, r3, #2
+ 80005c6:	4413      	add	r3, r2
+ 80005c8:	005b      	lsls	r3, r3, #1
+ 80005ca:	1aca      	subs	r2, r1, r3
+ 80005cc:	b2d2      	uxtb	r2, r2
+ 80005ce:	4b9d      	ldr	r3, [pc, #628]	@ (8000844 <SevenSegLEDsHandler+0x2e0>)
+ 80005d0:	705a      	strb	r2, [r3, #1]
+            output[2] = buffer[2] % 10;
+ 80005d2:	687b      	ldr	r3, [r7, #4]
+ 80005d4:	3308      	adds	r3, #8
+ 80005d6:	6819      	ldr	r1, [r3, #0]
+ 80005d8:	4b99      	ldr	r3, [pc, #612]	@ (8000840 <SevenSegLEDsHandler+0x2dc>)
+ 80005da:	fba3 2301 	umull	r2, r3, r3, r1
+ 80005de:	08da      	lsrs	r2, r3, #3
+ 80005e0:	4613      	mov	r3, r2
+ 80005e2:	009b      	lsls	r3, r3, #2
+ 80005e4:	4413      	add	r3, r2
+ 80005e6:	005b      	lsls	r3, r3, #1
+ 80005e8:	1aca      	subs	r2, r1, r3
+ 80005ea:	b2d2      	uxtb	r2, r2
+ 80005ec:	4b95      	ldr	r3, [pc, #596]	@ (8000844 <SevenSegLEDsHandler+0x2e0>)
+ 80005ee:	709a      	strb	r2, [r3, #2]
+            break;
+ 80005f0:	e11f      	b.n	8000832 <SevenSegLEDsHandler+0x2ce>
+        case 1:
+            output[0] = (buffer[0] / 10) % 10;
+ 80005f2:	687b      	ldr	r3, [r7, #4]
+ 80005f4:	681b      	ldr	r3, [r3, #0]
+ 80005f6:	4a92      	ldr	r2, [pc, #584]	@ (8000840 <SevenSegLEDsHandler+0x2dc>)
+ 80005f8:	fba2 2303 	umull	r2, r3, r2, r3
+ 80005fc:	08d9      	lsrs	r1, r3, #3
+ 80005fe:	4b90      	ldr	r3, [pc, #576]	@ (8000840 <SevenSegLEDsHandler+0x2dc>)
  8000600:	fba3 2301 	umull	r2, r3, r3, r1
  8000604:	08da      	lsrs	r2, r3, #3
  8000606:	4613      	mov	r3, r2
@@ -792,462 +787,467 @@ uint8_t* SevenSegLEDsHandler(uint32_t* buffer, uint8_t scan_state) {
  800060c:	005b      	lsls	r3, r3, #1
  800060e:	1aca      	subs	r2, r1, r3
  8000610:	b2d2      	uxtb	r2, r2
- 8000612:	4b9d      	ldr	r3, [pc, #628]	@ (8000888 <SevenSegLEDsHandler+0x2e0>)
- 8000614:	705a      	strb	r2, [r3, #1]
-            output[2] = buffer[2] % 10;
- 8000616:	687b      	ldr	r3, [r7, #4]
- 8000618:	3308      	adds	r3, #8
- 800061a:	6819      	ldr	r1, [r3, #0]
- 800061c:	4b99      	ldr	r3, [pc, #612]	@ (8000884 <SevenSegLEDsHandler+0x2dc>)
- 800061e:	fba3 2301 	umull	r2, r3, r3, r1
- 8000622:	08da      	lsrs	r2, r3, #3
- 8000624:	4613      	mov	r3, r2
- 8000626:	009b      	lsls	r3, r3, #2
- 8000628:	4413      	add	r3, r2
- 800062a:	005b      	lsls	r3, r3, #1
- 800062c:	1aca      	subs	r2, r1, r3
- 800062e:	b2d2      	uxtb	r2, r2
- 8000630:	4b95      	ldr	r3, [pc, #596]	@ (8000888 <SevenSegLEDsHandler+0x2e0>)
- 8000632:	709a      	strb	r2, [r3, #2]
-            break;
- 8000634:	e11f      	b.n	8000876 <SevenSegLEDsHandler+0x2ce>
-        case 1:
-            output[0] = (buffer[0] / 10) % 10;
- 8000636:	687b      	ldr	r3, [r7, #4]
- 8000638:	681b      	ldr	r3, [r3, #0]
- 800063a:	4a92      	ldr	r2, [pc, #584]	@ (8000884 <SevenSegLEDsHandler+0x2dc>)
- 800063c:	fba2 2303 	umull	r2, r3, r2, r3
- 8000640:	08d9      	lsrs	r1, r3, #3
- 8000642:	4b90      	ldr	r3, [pc, #576]	@ (8000884 <SevenSegLEDsHandler+0x2dc>)
- 8000644:	fba3 2301 	umull	r2, r3, r3, r1
- 8000648:	08da      	lsrs	r2, r3, #3
- 800064a:	4613      	mov	r3, r2
- 800064c:	009b      	lsls	r3, r3, #2
- 800064e:	4413      	add	r3, r2
- 8000650:	005b      	lsls	r3, r3, #1
- 8000652:	1aca      	subs	r2, r1, r3
- 8000654:	b2d2      	uxtb	r2, r2
- 8000656:	4b8c      	ldr	r3, [pc, #560]	@ (8000888 <SevenSegLEDsHandler+0x2e0>)
- 8000658:	701a      	strb	r2, [r3, #0]
+ 8000612:	4b8c      	ldr	r3, [pc, #560]	@ (8000844 <SevenSegLEDsHandler+0x2e0>)
+ 8000614:	701a      	strb	r2, [r3, #0]
             output[1] = (buffer[1] / 10) % 10;
- 800065a:	687b      	ldr	r3, [r7, #4]
- 800065c:	3304      	adds	r3, #4
- 800065e:	681b      	ldr	r3, [r3, #0]
- 8000660:	4a88      	ldr	r2, [pc, #544]	@ (8000884 <SevenSegLEDsHandler+0x2dc>)
- 8000662:	fba2 2303 	umull	r2, r3, r2, r3
- 8000666:	08d9      	lsrs	r1, r3, #3
- 8000668:	4b86      	ldr	r3, [pc, #536]	@ (8000884 <SevenSegLEDsHandler+0x2dc>)
- 800066a:	fba3 2301 	umull	r2, r3, r3, r1
- 800066e:	08da      	lsrs	r2, r3, #3
- 8000670:	4613      	mov	r3, r2
- 8000672:	009b      	lsls	r3, r3, #2
- 8000674:	4413      	add	r3, r2
- 8000676:	005b      	lsls	r3, r3, #1
- 8000678:	1aca      	subs	r2, r1, r3
- 800067a:	b2d2      	uxtb	r2, r2
- 800067c:	4b82      	ldr	r3, [pc, #520]	@ (8000888 <SevenSegLEDsHandler+0x2e0>)
- 800067e:	705a      	strb	r2, [r3, #1]
+ 8000616:	687b      	ldr	r3, [r7, #4]
+ 8000618:	3304      	adds	r3, #4
+ 800061a:	681b      	ldr	r3, [r3, #0]
+ 800061c:	4a88      	ldr	r2, [pc, #544]	@ (8000840 <SevenSegLEDsHandler+0x2dc>)
+ 800061e:	fba2 2303 	umull	r2, r3, r2, r3
+ 8000622:	08d9      	lsrs	r1, r3, #3
+ 8000624:	4b86      	ldr	r3, [pc, #536]	@ (8000840 <SevenSegLEDsHandler+0x2dc>)
+ 8000626:	fba3 2301 	umull	r2, r3, r3, r1
+ 800062a:	08da      	lsrs	r2, r3, #3
+ 800062c:	4613      	mov	r3, r2
+ 800062e:	009b      	lsls	r3, r3, #2
+ 8000630:	4413      	add	r3, r2
+ 8000632:	005b      	lsls	r3, r3, #1
+ 8000634:	1aca      	subs	r2, r1, r3
+ 8000636:	b2d2      	uxtb	r2, r2
+ 8000638:	4b82      	ldr	r3, [pc, #520]	@ (8000844 <SevenSegLEDsHandler+0x2e0>)
+ 800063a:	705a      	strb	r2, [r3, #1]
             output[2] = (buffer[2] / 10) % 10;
- 8000680:	687b      	ldr	r3, [r7, #4]
- 8000682:	3308      	adds	r3, #8
- 8000684:	681b      	ldr	r3, [r3, #0]
- 8000686:	4a7f      	ldr	r2, [pc, #508]	@ (8000884 <SevenSegLEDsHandler+0x2dc>)
- 8000688:	fba2 2303 	umull	r2, r3, r2, r3
- 800068c:	08d9      	lsrs	r1, r3, #3
- 800068e:	4b7d      	ldr	r3, [pc, #500]	@ (8000884 <SevenSegLEDsHandler+0x2dc>)
- 8000690:	fba3 2301 	umull	r2, r3, r3, r1
- 8000694:	08da      	lsrs	r2, r3, #3
- 8000696:	4613      	mov	r3, r2
- 8000698:	009b      	lsls	r3, r3, #2
- 800069a:	4413      	add	r3, r2
- 800069c:	005b      	lsls	r3, r3, #1
- 800069e:	1aca      	subs	r2, r1, r3
- 80006a0:	b2d2      	uxtb	r2, r2
- 80006a2:	4b79      	ldr	r3, [pc, #484]	@ (8000888 <SevenSegLEDsHandler+0x2e0>)
- 80006a4:	709a      	strb	r2, [r3, #2]
+ 800063c:	687b      	ldr	r3, [r7, #4]
+ 800063e:	3308      	adds	r3, #8
+ 8000640:	681b      	ldr	r3, [r3, #0]
+ 8000642:	4a7f      	ldr	r2, [pc, #508]	@ (8000840 <SevenSegLEDsHandler+0x2dc>)
+ 8000644:	fba2 2303 	umull	r2, r3, r2, r3
+ 8000648:	08d9      	lsrs	r1, r3, #3
+ 800064a:	4b7d      	ldr	r3, [pc, #500]	@ (8000840 <SevenSegLEDsHandler+0x2dc>)
+ 800064c:	fba3 2301 	umull	r2, r3, r3, r1
+ 8000650:	08da      	lsrs	r2, r3, #3
+ 8000652:	4613      	mov	r3, r2
+ 8000654:	009b      	lsls	r3, r3, #2
+ 8000656:	4413      	add	r3, r2
+ 8000658:	005b      	lsls	r3, r3, #1
+ 800065a:	1aca      	subs	r2, r1, r3
+ 800065c:	b2d2      	uxtb	r2, r2
+ 800065e:	4b79      	ldr	r3, [pc, #484]	@ (8000844 <SevenSegLEDsHandler+0x2e0>)
+ 8000660:	709a      	strb	r2, [r3, #2]
             break;
- 80006a6:	e0e6      	b.n	8000876 <SevenSegLEDsHandler+0x2ce>
+ 8000662:	e0e6      	b.n	8000832 <SevenSegLEDsHandler+0x2ce>
         case 2:
             output[0] = (buffer[0] / 100) % 10;
- 80006a8:	687b      	ldr	r3, [r7, #4]
- 80006aa:	681b      	ldr	r3, [r3, #0]
- 80006ac:	4a77      	ldr	r2, [pc, #476]	@ (800088c <SevenSegLEDsHandler+0x2e4>)
- 80006ae:	fba2 2303 	umull	r2, r3, r2, r3
- 80006b2:	0959      	lsrs	r1, r3, #5
- 80006b4:	4b73      	ldr	r3, [pc, #460]	@ (8000884 <SevenSegLEDsHandler+0x2dc>)
- 80006b6:	fba3 2301 	umull	r2, r3, r3, r1
- 80006ba:	08da      	lsrs	r2, r3, #3
- 80006bc:	4613      	mov	r3, r2
- 80006be:	009b      	lsls	r3, r3, #2
- 80006c0:	4413      	add	r3, r2
- 80006c2:	005b      	lsls	r3, r3, #1
- 80006c4:	1aca      	subs	r2, r1, r3
- 80006c6:	b2d2      	uxtb	r2, r2
- 80006c8:	4b6f      	ldr	r3, [pc, #444]	@ (8000888 <SevenSegLEDsHandler+0x2e0>)
- 80006ca:	701a      	strb	r2, [r3, #0]
+ 8000664:	687b      	ldr	r3, [r7, #4]
+ 8000666:	681b      	ldr	r3, [r3, #0]
+ 8000668:	4a77      	ldr	r2, [pc, #476]	@ (8000848 <SevenSegLEDsHandler+0x2e4>)
+ 800066a:	fba2 2303 	umull	r2, r3, r2, r3
+ 800066e:	0959      	lsrs	r1, r3, #5
+ 8000670:	4b73      	ldr	r3, [pc, #460]	@ (8000840 <SevenSegLEDsHandler+0x2dc>)
+ 8000672:	fba3 2301 	umull	r2, r3, r3, r1
+ 8000676:	08da      	lsrs	r2, r3, #3
+ 8000678:	4613      	mov	r3, r2
+ 800067a:	009b      	lsls	r3, r3, #2
+ 800067c:	4413      	add	r3, r2
+ 800067e:	005b      	lsls	r3, r3, #1
+ 8000680:	1aca      	subs	r2, r1, r3
+ 8000682:	b2d2      	uxtb	r2, r2
+ 8000684:	4b6f      	ldr	r3, [pc, #444]	@ (8000844 <SevenSegLEDsHandler+0x2e0>)
+ 8000686:	701a      	strb	r2, [r3, #0]
             output[1] = (buffer[1] / 100) % 10;
- 80006cc:	687b      	ldr	r3, [r7, #4]
- 80006ce:	3304      	adds	r3, #4
- 80006d0:	681b      	ldr	r3, [r3, #0]
- 80006d2:	4a6e      	ldr	r2, [pc, #440]	@ (800088c <SevenSegLEDsHandler+0x2e4>)
- 80006d4:	fba2 2303 	umull	r2, r3, r2, r3
- 80006d8:	0959      	lsrs	r1, r3, #5
- 80006da:	4b6a      	ldr	r3, [pc, #424]	@ (8000884 <SevenSegLEDsHandler+0x2dc>)
- 80006dc:	fba3 2301 	umull	r2, r3, r3, r1
- 80006e0:	08da      	lsrs	r2, r3, #3
- 80006e2:	4613      	mov	r3, r2
- 80006e4:	009b      	lsls	r3, r3, #2
- 80006e6:	4413      	add	r3, r2
- 80006e8:	005b      	lsls	r3, r3, #1
- 80006ea:	1aca      	subs	r2, r1, r3
- 80006ec:	b2d2      	uxtb	r2, r2
- 80006ee:	4b66      	ldr	r3, [pc, #408]	@ (8000888 <SevenSegLEDsHandler+0x2e0>)
- 80006f0:	705a      	strb	r2, [r3, #1]
+ 8000688:	687b      	ldr	r3, [r7, #4]
+ 800068a:	3304      	adds	r3, #4
+ 800068c:	681b      	ldr	r3, [r3, #0]
+ 800068e:	4a6e      	ldr	r2, [pc, #440]	@ (8000848 <SevenSegLEDsHandler+0x2e4>)
+ 8000690:	fba2 2303 	umull	r2, r3, r2, r3
+ 8000694:	0959      	lsrs	r1, r3, #5
+ 8000696:	4b6a      	ldr	r3, [pc, #424]	@ (8000840 <SevenSegLEDsHandler+0x2dc>)
+ 8000698:	fba3 2301 	umull	r2, r3, r3, r1
+ 800069c:	08da      	lsrs	r2, r3, #3
+ 800069e:	4613      	mov	r3, r2
+ 80006a0:	009b      	lsls	r3, r3, #2
+ 80006a2:	4413      	add	r3, r2
+ 80006a4:	005b      	lsls	r3, r3, #1
+ 80006a6:	1aca      	subs	r2, r1, r3
+ 80006a8:	b2d2      	uxtb	r2, r2
+ 80006aa:	4b66      	ldr	r3, [pc, #408]	@ (8000844 <SevenSegLEDsHandler+0x2e0>)
+ 80006ac:	705a      	strb	r2, [r3, #1]
             output[2] = (buffer[2] / 100) % 10;
- 80006f2:	687b      	ldr	r3, [r7, #4]
- 80006f4:	3308      	adds	r3, #8
- 80006f6:	681b      	ldr	r3, [r3, #0]
- 80006f8:	4a64      	ldr	r2, [pc, #400]	@ (800088c <SevenSegLEDsHandler+0x2e4>)
- 80006fa:	fba2 2303 	umull	r2, r3, r2, r3
- 80006fe:	0959      	lsrs	r1, r3, #5
- 8000700:	4b60      	ldr	r3, [pc, #384]	@ (8000884 <SevenSegLEDsHandler+0x2dc>)
- 8000702:	fba3 2301 	umull	r2, r3, r3, r1
- 8000706:	08da      	lsrs	r2, r3, #3
- 8000708:	4613      	mov	r3, r2
- 800070a:	009b      	lsls	r3, r3, #2
- 800070c:	4413      	add	r3, r2
- 800070e:	005b      	lsls	r3, r3, #1
- 8000710:	1aca      	subs	r2, r1, r3
- 8000712:	b2d2      	uxtb	r2, r2
- 8000714:	4b5c      	ldr	r3, [pc, #368]	@ (8000888 <SevenSegLEDsHandler+0x2e0>)
- 8000716:	709a      	strb	r2, [r3, #2]
+ 80006ae:	687b      	ldr	r3, [r7, #4]
+ 80006b0:	3308      	adds	r3, #8
+ 80006b2:	681b      	ldr	r3, [r3, #0]
+ 80006b4:	4a64      	ldr	r2, [pc, #400]	@ (8000848 <SevenSegLEDsHandler+0x2e4>)
+ 80006b6:	fba2 2303 	umull	r2, r3, r2, r3
+ 80006ba:	0959      	lsrs	r1, r3, #5
+ 80006bc:	4b60      	ldr	r3, [pc, #384]	@ (8000840 <SevenSegLEDsHandler+0x2dc>)
+ 80006be:	fba3 2301 	umull	r2, r3, r3, r1
+ 80006c2:	08da      	lsrs	r2, r3, #3
+ 80006c4:	4613      	mov	r3, r2
+ 80006c6:	009b      	lsls	r3, r3, #2
+ 80006c8:	4413      	add	r3, r2
+ 80006ca:	005b      	lsls	r3, r3, #1
+ 80006cc:	1aca      	subs	r2, r1, r3
+ 80006ce:	b2d2      	uxtb	r2, r2
+ 80006d0:	4b5c      	ldr	r3, [pc, #368]	@ (8000844 <SevenSegLEDsHandler+0x2e0>)
+ 80006d2:	709a      	strb	r2, [r3, #2]
             break;
- 8000718:	e0ad      	b.n	8000876 <SevenSegLEDsHandler+0x2ce>
+ 80006d4:	e0ad      	b.n	8000832 <SevenSegLEDsHandler+0x2ce>
         case 3:
             output[0] = (buffer[0] / 1000) % 10;
- 800071a:	687b      	ldr	r3, [r7, #4]
- 800071c:	681b      	ldr	r3, [r3, #0]
- 800071e:	4a5c      	ldr	r2, [pc, #368]	@ (8000890 <SevenSegLEDsHandler+0x2e8>)
- 8000720:	fba2 2303 	umull	r2, r3, r2, r3
- 8000724:	0999      	lsrs	r1, r3, #6
- 8000726:	4b57      	ldr	r3, [pc, #348]	@ (8000884 <SevenSegLEDsHandler+0x2dc>)
- 8000728:	fba3 2301 	umull	r2, r3, r3, r1
- 800072c:	08da      	lsrs	r2, r3, #3
- 800072e:	4613      	mov	r3, r2
- 8000730:	009b      	lsls	r3, r3, #2
- 8000732:	4413      	add	r3, r2
- 8000734:	005b      	lsls	r3, r3, #1
- 8000736:	1aca      	subs	r2, r1, r3
- 8000738:	b2d2      	uxtb	r2, r2
- 800073a:	4b53      	ldr	r3, [pc, #332]	@ (8000888 <SevenSegLEDsHandler+0x2e0>)
- 800073c:	701a      	strb	r2, [r3, #0]
+ 80006d6:	687b      	ldr	r3, [r7, #4]
+ 80006d8:	681b      	ldr	r3, [r3, #0]
+ 80006da:	4a5c      	ldr	r2, [pc, #368]	@ (800084c <SevenSegLEDsHandler+0x2e8>)
+ 80006dc:	fba2 2303 	umull	r2, r3, r2, r3
+ 80006e0:	0999      	lsrs	r1, r3, #6
+ 80006e2:	4b57      	ldr	r3, [pc, #348]	@ (8000840 <SevenSegLEDsHandler+0x2dc>)
+ 80006e4:	fba3 2301 	umull	r2, r3, r3, r1
+ 80006e8:	08da      	lsrs	r2, r3, #3
+ 80006ea:	4613      	mov	r3, r2
+ 80006ec:	009b      	lsls	r3, r3, #2
+ 80006ee:	4413      	add	r3, r2
+ 80006f0:	005b      	lsls	r3, r3, #1
+ 80006f2:	1aca      	subs	r2, r1, r3
+ 80006f4:	b2d2      	uxtb	r2, r2
+ 80006f6:	4b53      	ldr	r3, [pc, #332]	@ (8000844 <SevenSegLEDsHandler+0x2e0>)
+ 80006f8:	701a      	strb	r2, [r3, #0]
             output[1] = (buffer[1] / 1000) % 10;
- 800073e:	687b      	ldr	r3, [r7, #4]
- 8000740:	3304      	adds	r3, #4
- 8000742:	681b      	ldr	r3, [r3, #0]
- 8000744:	4a52      	ldr	r2, [pc, #328]	@ (8000890 <SevenSegLEDsHandler+0x2e8>)
- 8000746:	fba2 2303 	umull	r2, r3, r2, r3
- 800074a:	0999      	lsrs	r1, r3, #6
- 800074c:	4b4d      	ldr	r3, [pc, #308]	@ (8000884 <SevenSegLEDsHandler+0x2dc>)
- 800074e:	fba3 2301 	umull	r2, r3, r3, r1
- 8000752:	08da      	lsrs	r2, r3, #3
- 8000754:	4613      	mov	r3, r2
- 8000756:	009b      	lsls	r3, r3, #2
- 8000758:	4413      	add	r3, r2
- 800075a:	005b      	lsls	r3, r3, #1
- 800075c:	1aca      	subs	r2, r1, r3
- 800075e:	b2d2      	uxtb	r2, r2
- 8000760:	4b49      	ldr	r3, [pc, #292]	@ (8000888 <SevenSegLEDsHandler+0x2e0>)
- 8000762:	705a      	strb	r2, [r3, #1]
+ 80006fa:	687b      	ldr	r3, [r7, #4]
+ 80006fc:	3304      	adds	r3, #4
+ 80006fe:	681b      	ldr	r3, [r3, #0]
+ 8000700:	4a52      	ldr	r2, [pc, #328]	@ (800084c <SevenSegLEDsHandler+0x2e8>)
+ 8000702:	fba2 2303 	umull	r2, r3, r2, r3
+ 8000706:	0999      	lsrs	r1, r3, #6
+ 8000708:	4b4d      	ldr	r3, [pc, #308]	@ (8000840 <SevenSegLEDsHandler+0x2dc>)
+ 800070a:	fba3 2301 	umull	r2, r3, r3, r1
+ 800070e:	08da      	lsrs	r2, r3, #3
+ 8000710:	4613      	mov	r3, r2
+ 8000712:	009b      	lsls	r3, r3, #2
+ 8000714:	4413      	add	r3, r2
+ 8000716:	005b      	lsls	r3, r3, #1
+ 8000718:	1aca      	subs	r2, r1, r3
+ 800071a:	b2d2      	uxtb	r2, r2
+ 800071c:	4b49      	ldr	r3, [pc, #292]	@ (8000844 <SevenSegLEDsHandler+0x2e0>)
+ 800071e:	705a      	strb	r2, [r3, #1]
             output[2] = (buffer[2] / 1000) % 10;
- 8000764:	687b      	ldr	r3, [r7, #4]
- 8000766:	3308      	adds	r3, #8
- 8000768:	681b      	ldr	r3, [r3, #0]
- 800076a:	4a49      	ldr	r2, [pc, #292]	@ (8000890 <SevenSegLEDsHandler+0x2e8>)
- 800076c:	fba2 2303 	umull	r2, r3, r2, r3
- 8000770:	0999      	lsrs	r1, r3, #6
- 8000772:	4b44      	ldr	r3, [pc, #272]	@ (8000884 <SevenSegLEDsHandler+0x2dc>)
- 8000774:	fba3 2301 	umull	r2, r3, r3, r1
- 8000778:	08da      	lsrs	r2, r3, #3
- 800077a:	4613      	mov	r3, r2
- 800077c:	009b      	lsls	r3, r3, #2
- 800077e:	4413      	add	r3, r2
- 8000780:	005b      	lsls	r3, r3, #1
- 8000782:	1aca      	subs	r2, r1, r3
- 8000784:	b2d2      	uxtb	r2, r2
- 8000786:	4b40      	ldr	r3, [pc, #256]	@ (8000888 <SevenSegLEDsHandler+0x2e0>)
- 8000788:	709a      	strb	r2, [r3, #2]
+ 8000720:	687b      	ldr	r3, [r7, #4]
+ 8000722:	3308      	adds	r3, #8
+ 8000724:	681b      	ldr	r3, [r3, #0]
+ 8000726:	4a49      	ldr	r2, [pc, #292]	@ (800084c <SevenSegLEDsHandler+0x2e8>)
+ 8000728:	fba2 2303 	umull	r2, r3, r2, r3
+ 800072c:	0999      	lsrs	r1, r3, #6
+ 800072e:	4b44      	ldr	r3, [pc, #272]	@ (8000840 <SevenSegLEDsHandler+0x2dc>)
+ 8000730:	fba3 2301 	umull	r2, r3, r3, r1
+ 8000734:	08da      	lsrs	r2, r3, #3
+ 8000736:	4613      	mov	r3, r2
+ 8000738:	009b      	lsls	r3, r3, #2
+ 800073a:	4413      	add	r3, r2
+ 800073c:	005b      	lsls	r3, r3, #1
+ 800073e:	1aca      	subs	r2, r1, r3
+ 8000740:	b2d2      	uxtb	r2, r2
+ 8000742:	4b40      	ldr	r3, [pc, #256]	@ (8000844 <SevenSegLEDsHandler+0x2e0>)
+ 8000744:	709a      	strb	r2, [r3, #2]
             break;
- 800078a:	e074      	b.n	8000876 <SevenSegLEDsHandler+0x2ce>
+ 8000746:	e074      	b.n	8000832 <SevenSegLEDsHandler+0x2ce>
         case 4:
             output[0] = (buffer[0] / 10000) % 10;
- 800078c:	687b      	ldr	r3, [r7, #4]
- 800078e:	681b      	ldr	r3, [r3, #0]
- 8000790:	4a40      	ldr	r2, [pc, #256]	@ (8000894 <SevenSegLEDsHandler+0x2ec>)
- 8000792:	fba2 2303 	umull	r2, r3, r2, r3
- 8000796:	0b59      	lsrs	r1, r3, #13
- 8000798:	4b3a      	ldr	r3, [pc, #232]	@ (8000884 <SevenSegLEDsHandler+0x2dc>)
- 800079a:	fba3 2301 	umull	r2, r3, r3, r1
- 800079e:	08da      	lsrs	r2, r3, #3
- 80007a0:	4613      	mov	r3, r2
- 80007a2:	009b      	lsls	r3, r3, #2
- 80007a4:	4413      	add	r3, r2
- 80007a6:	005b      	lsls	r3, r3, #1
- 80007a8:	1aca      	subs	r2, r1, r3
- 80007aa:	b2d2      	uxtb	r2, r2
- 80007ac:	4b36      	ldr	r3, [pc, #216]	@ (8000888 <SevenSegLEDsHandler+0x2e0>)
- 80007ae:	701a      	strb	r2, [r3, #0]
+ 8000748:	687b      	ldr	r3, [r7, #4]
+ 800074a:	681b      	ldr	r3, [r3, #0]
+ 800074c:	4a40      	ldr	r2, [pc, #256]	@ (8000850 <SevenSegLEDsHandler+0x2ec>)
+ 800074e:	fba2 2303 	umull	r2, r3, r2, r3
+ 8000752:	0b59      	lsrs	r1, r3, #13
+ 8000754:	4b3a      	ldr	r3, [pc, #232]	@ (8000840 <SevenSegLEDsHandler+0x2dc>)
+ 8000756:	fba3 2301 	umull	r2, r3, r3, r1
+ 800075a:	08da      	lsrs	r2, r3, #3
+ 800075c:	4613      	mov	r3, r2
+ 800075e:	009b      	lsls	r3, r3, #2
+ 8000760:	4413      	add	r3, r2
+ 8000762:	005b      	lsls	r3, r3, #1
+ 8000764:	1aca      	subs	r2, r1, r3
+ 8000766:	b2d2      	uxtb	r2, r2
+ 8000768:	4b36      	ldr	r3, [pc, #216]	@ (8000844 <SevenSegLEDsHandler+0x2e0>)
+ 800076a:	701a      	strb	r2, [r3, #0]
             output[1] = (buffer[1] / 10000) % 10;
- 80007b0:	687b      	ldr	r3, [r7, #4]
- 80007b2:	3304      	adds	r3, #4
- 80007b4:	681b      	ldr	r3, [r3, #0]
- 80007b6:	4a37      	ldr	r2, [pc, #220]	@ (8000894 <SevenSegLEDsHandler+0x2ec>)
- 80007b8:	fba2 2303 	umull	r2, r3, r2, r3
- 80007bc:	0b59      	lsrs	r1, r3, #13
- 80007be:	4b31      	ldr	r3, [pc, #196]	@ (8000884 <SevenSegLEDsHandler+0x2dc>)
- 80007c0:	fba3 2301 	umull	r2, r3, r3, r1
- 80007c4:	08da      	lsrs	r2, r3, #3
- 80007c6:	4613      	mov	r3, r2
- 80007c8:	009b      	lsls	r3, r3, #2
- 80007ca:	4413      	add	r3, r2
- 80007cc:	005b      	lsls	r3, r3, #1
- 80007ce:	1aca      	subs	r2, r1, r3
- 80007d0:	b2d2      	uxtb	r2, r2
- 80007d2:	4b2d      	ldr	r3, [pc, #180]	@ (8000888 <SevenSegLEDsHandler+0x2e0>)
- 80007d4:	705a      	strb	r2, [r3, #1]
+ 800076c:	687b      	ldr	r3, [r7, #4]
+ 800076e:	3304      	adds	r3, #4
+ 8000770:	681b      	ldr	r3, [r3, #0]
+ 8000772:	4a37      	ldr	r2, [pc, #220]	@ (8000850 <SevenSegLEDsHandler+0x2ec>)
+ 8000774:	fba2 2303 	umull	r2, r3, r2, r3
+ 8000778:	0b59      	lsrs	r1, r3, #13
+ 800077a:	4b31      	ldr	r3, [pc, #196]	@ (8000840 <SevenSegLEDsHandler+0x2dc>)
+ 800077c:	fba3 2301 	umull	r2, r3, r3, r1
+ 8000780:	08da      	lsrs	r2, r3, #3
+ 8000782:	4613      	mov	r3, r2
+ 8000784:	009b      	lsls	r3, r3, #2
+ 8000786:	4413      	add	r3, r2
+ 8000788:	005b      	lsls	r3, r3, #1
+ 800078a:	1aca      	subs	r2, r1, r3
+ 800078c:	b2d2      	uxtb	r2, r2
+ 800078e:	4b2d      	ldr	r3, [pc, #180]	@ (8000844 <SevenSegLEDsHandler+0x2e0>)
+ 8000790:	705a      	strb	r2, [r3, #1]
             output[2] = (buffer[2] / 10000) % 10;
- 80007d6:	687b      	ldr	r3, [r7, #4]
- 80007d8:	3308      	adds	r3, #8
- 80007da:	681b      	ldr	r3, [r3, #0]
- 80007dc:	4a2d      	ldr	r2, [pc, #180]	@ (8000894 <SevenSegLEDsHandler+0x2ec>)
- 80007de:	fba2 2303 	umull	r2, r3, r2, r3
- 80007e2:	0b59      	lsrs	r1, r3, #13
- 80007e4:	4b27      	ldr	r3, [pc, #156]	@ (8000884 <SevenSegLEDsHandler+0x2dc>)
- 80007e6:	fba3 2301 	umull	r2, r3, r3, r1
- 80007ea:	08da      	lsrs	r2, r3, #3
- 80007ec:	4613      	mov	r3, r2
- 80007ee:	009b      	lsls	r3, r3, #2
- 80007f0:	4413      	add	r3, r2
- 80007f2:	005b      	lsls	r3, r3, #1
- 80007f4:	1aca      	subs	r2, r1, r3
- 80007f6:	b2d2      	uxtb	r2, r2
- 80007f8:	4b23      	ldr	r3, [pc, #140]	@ (8000888 <SevenSegLEDsHandler+0x2e0>)
- 80007fa:	709a      	strb	r2, [r3, #2]
+ 8000792:	687b      	ldr	r3, [r7, #4]
+ 8000794:	3308      	adds	r3, #8
+ 8000796:	681b      	ldr	r3, [r3, #0]
+ 8000798:	4a2d      	ldr	r2, [pc, #180]	@ (8000850 <SevenSegLEDsHandler+0x2ec>)
+ 800079a:	fba2 2303 	umull	r2, r3, r2, r3
+ 800079e:	0b59      	lsrs	r1, r3, #13
+ 80007a0:	4b27      	ldr	r3, [pc, #156]	@ (8000840 <SevenSegLEDsHandler+0x2dc>)
+ 80007a2:	fba3 2301 	umull	r2, r3, r3, r1
+ 80007a6:	08da      	lsrs	r2, r3, #3
+ 80007a8:	4613      	mov	r3, r2
+ 80007aa:	009b      	lsls	r3, r3, #2
+ 80007ac:	4413      	add	r3, r2
+ 80007ae:	005b      	lsls	r3, r3, #1
+ 80007b0:	1aca      	subs	r2, r1, r3
+ 80007b2:	b2d2      	uxtb	r2, r2
+ 80007b4:	4b23      	ldr	r3, [pc, #140]	@ (8000844 <SevenSegLEDsHandler+0x2e0>)
+ 80007b6:	709a      	strb	r2, [r3, #2]
             break;
- 80007fc:	e03b      	b.n	8000876 <SevenSegLEDsHandler+0x2ce>
+ 80007b8:	e03b      	b.n	8000832 <SevenSegLEDsHandler+0x2ce>
         case 5:
             output[0] = (buffer[0] / 100000) % 10;
- 80007fe:	687b      	ldr	r3, [r7, #4]
- 8000800:	681b      	ldr	r3, [r3, #0]
- 8000802:	095b      	lsrs	r3, r3, #5
- 8000804:	4a24      	ldr	r2, [pc, #144]	@ (8000898 <SevenSegLEDsHandler+0x2f0>)
- 8000806:	fba2 2303 	umull	r2, r3, r2, r3
- 800080a:	09d9      	lsrs	r1, r3, #7
- 800080c:	4b1d      	ldr	r3, [pc, #116]	@ (8000884 <SevenSegLEDsHandler+0x2dc>)
- 800080e:	fba3 2301 	umull	r2, r3, r3, r1
- 8000812:	08da      	lsrs	r2, r3, #3
- 8000814:	4613      	mov	r3, r2
- 8000816:	009b      	lsls	r3, r3, #2
- 8000818:	4413      	add	r3, r2
- 800081a:	005b      	lsls	r3, r3, #1
- 800081c:	1aca      	subs	r2, r1, r3
- 800081e:	b2d2      	uxtb	r2, r2
- 8000820:	4b19      	ldr	r3, [pc, #100]	@ (8000888 <SevenSegLEDsHandler+0x2e0>)
- 8000822:	701a      	strb	r2, [r3, #0]
+ 80007ba:	687b      	ldr	r3, [r7, #4]
+ 80007bc:	681b      	ldr	r3, [r3, #0]
+ 80007be:	095b      	lsrs	r3, r3, #5
+ 80007c0:	4a24      	ldr	r2, [pc, #144]	@ (8000854 <SevenSegLEDsHandler+0x2f0>)
+ 80007c2:	fba2 2303 	umull	r2, r3, r2, r3
+ 80007c6:	09d9      	lsrs	r1, r3, #7
+ 80007c8:	4b1d      	ldr	r3, [pc, #116]	@ (8000840 <SevenSegLEDsHandler+0x2dc>)
+ 80007ca:	fba3 2301 	umull	r2, r3, r3, r1
+ 80007ce:	08da      	lsrs	r2, r3, #3
+ 80007d0:	4613      	mov	r3, r2
+ 80007d2:	009b      	lsls	r3, r3, #2
+ 80007d4:	4413      	add	r3, r2
+ 80007d6:	005b      	lsls	r3, r3, #1
+ 80007d8:	1aca      	subs	r2, r1, r3
+ 80007da:	b2d2      	uxtb	r2, r2
+ 80007dc:	4b19      	ldr	r3, [pc, #100]	@ (8000844 <SevenSegLEDsHandler+0x2e0>)
+ 80007de:	701a      	strb	r2, [r3, #0]
             output[1] = (buffer[1] / 100000) % 10;
- 8000824:	687b      	ldr	r3, [r7, #4]
- 8000826:	3304      	adds	r3, #4
- 8000828:	681b      	ldr	r3, [r3, #0]
- 800082a:	095b      	lsrs	r3, r3, #5
- 800082c:	4a1a      	ldr	r2, [pc, #104]	@ (8000898 <SevenSegLEDsHandler+0x2f0>)
- 800082e:	fba2 2303 	umull	r2, r3, r2, r3
- 8000832:	09d9      	lsrs	r1, r3, #7
- 8000834:	4b13      	ldr	r3, [pc, #76]	@ (8000884 <SevenSegLEDsHandler+0x2dc>)
- 8000836:	fba3 2301 	umull	r2, r3, r3, r1
- 800083a:	08da      	lsrs	r2, r3, #3
- 800083c:	4613      	mov	r3, r2
- 800083e:	009b      	lsls	r3, r3, #2
- 8000840:	4413      	add	r3, r2
- 8000842:	005b      	lsls	r3, r3, #1
- 8000844:	1aca      	subs	r2, r1, r3
- 8000846:	b2d2      	uxtb	r2, r2
- 8000848:	4b0f      	ldr	r3, [pc, #60]	@ (8000888 <SevenSegLEDsHandler+0x2e0>)
- 800084a:	705a      	strb	r2, [r3, #1]
+ 80007e0:	687b      	ldr	r3, [r7, #4]
+ 80007e2:	3304      	adds	r3, #4
+ 80007e4:	681b      	ldr	r3, [r3, #0]
+ 80007e6:	095b      	lsrs	r3, r3, #5
+ 80007e8:	4a1a      	ldr	r2, [pc, #104]	@ (8000854 <SevenSegLEDsHandler+0x2f0>)
+ 80007ea:	fba2 2303 	umull	r2, r3, r2, r3
+ 80007ee:	09d9      	lsrs	r1, r3, #7
+ 80007f0:	4b13      	ldr	r3, [pc, #76]	@ (8000840 <SevenSegLEDsHandler+0x2dc>)
+ 80007f2:	fba3 2301 	umull	r2, r3, r3, r1
+ 80007f6:	08da      	lsrs	r2, r3, #3
+ 80007f8:	4613      	mov	r3, r2
+ 80007fa:	009b      	lsls	r3, r3, #2
+ 80007fc:	4413      	add	r3, r2
+ 80007fe:	005b      	lsls	r3, r3, #1
+ 8000800:	1aca      	subs	r2, r1, r3
+ 8000802:	b2d2      	uxtb	r2, r2
+ 8000804:	4b0f      	ldr	r3, [pc, #60]	@ (8000844 <SevenSegLEDsHandler+0x2e0>)
+ 8000806:	705a      	strb	r2, [r3, #1]
             output[2] = (buffer[2] / 100000) % 10;
- 800084c:	687b      	ldr	r3, [r7, #4]
- 800084e:	3308      	adds	r3, #8
- 8000850:	681b      	ldr	r3, [r3, #0]
- 8000852:	095b      	lsrs	r3, r3, #5
- 8000854:	4a10      	ldr	r2, [pc, #64]	@ (8000898 <SevenSegLEDsHandler+0x2f0>)
- 8000856:	fba2 2303 	umull	r2, r3, r2, r3
- 800085a:	09d9      	lsrs	r1, r3, #7
- 800085c:	4b09      	ldr	r3, [pc, #36]	@ (8000884 <SevenSegLEDsHandler+0x2dc>)
- 800085e:	fba3 2301 	umull	r2, r3, r3, r1
- 8000862:	08da      	lsrs	r2, r3, #3
- 8000864:	4613      	mov	r3, r2
- 8000866:	009b      	lsls	r3, r3, #2
- 8000868:	4413      	add	r3, r2
- 800086a:	005b      	lsls	r3, r3, #1
- 800086c:	1aca      	subs	r2, r1, r3
- 800086e:	b2d2      	uxtb	r2, r2
- 8000870:	4b05      	ldr	r3, [pc, #20]	@ (8000888 <SevenSegLEDsHandler+0x2e0>)
- 8000872:	709a      	strb	r2, [r3, #2]
+ 8000808:	687b      	ldr	r3, [r7, #4]
+ 800080a:	3308      	adds	r3, #8
+ 800080c:	681b      	ldr	r3, [r3, #0]
+ 800080e:	095b      	lsrs	r3, r3, #5
+ 8000810:	4a10      	ldr	r2, [pc, #64]	@ (8000854 <SevenSegLEDsHandler+0x2f0>)
+ 8000812:	fba2 2303 	umull	r2, r3, r2, r3
+ 8000816:	09d9      	lsrs	r1, r3, #7
+ 8000818:	4b09      	ldr	r3, [pc, #36]	@ (8000840 <SevenSegLEDsHandler+0x2dc>)
+ 800081a:	fba3 2301 	umull	r2, r3, r3, r1
+ 800081e:	08da      	lsrs	r2, r3, #3
+ 8000820:	4613      	mov	r3, r2
+ 8000822:	009b      	lsls	r3, r3, #2
+ 8000824:	4413      	add	r3, r2
+ 8000826:	005b      	lsls	r3, r3, #1
+ 8000828:	1aca      	subs	r2, r1, r3
+ 800082a:	b2d2      	uxtb	r2, r2
+ 800082c:	4b05      	ldr	r3, [pc, #20]	@ (8000844 <SevenSegLEDsHandler+0x2e0>)
+ 800082e:	709a      	strb	r2, [r3, #2]
             break;
- 8000874:	bf00      	nop
+ 8000830:	bf00      	nop
     }
     return output;
- 8000876:	4b04      	ldr	r3, [pc, #16]	@ (8000888 <SevenSegLEDsHandler+0x2e0>)
+ 8000832:	4b04      	ldr	r3, [pc, #16]	@ (8000844 <SevenSegLEDsHandler+0x2e0>)
 }
- 8000878:	4618      	mov	r0, r3
- 800087a:	370c      	adds	r7, #12
- 800087c:	46bd      	mov	sp, r7
- 800087e:	bc80      	pop	{r7}
- 8000880:	4770      	bx	lr
- 8000882:	bf00      	nop
- 8000884:	cccccccd 	.word	0xcccccccd
- 8000888:	20000050 	.word	0x20000050
- 800088c:	51eb851f 	.word	0x51eb851f
- 8000890:	10624dd3 	.word	0x10624dd3
- 8000894:	d1b71759 	.word	0xd1b71759
- 8000898:	0a7c5ac5 	.word	0x0a7c5ac5
+ 8000834:	4618      	mov	r0, r3
+ 8000836:	370c      	adds	r7, #12
+ 8000838:	46bd      	mov	sp, r7
+ 800083a:	bc80      	pop	{r7}
+ 800083c:	4770      	bx	lr
+ 800083e:	bf00      	nop
+ 8000840:	cccccccd 	.word	0xcccccccd
+ 8000844:	20000050 	.word	0x20000050
+ 8000848:	51eb851f 	.word	0x51eb851f
+ 800084c:	10624dd3 	.word	0x10624dd3
+ 8000850:	d1b71759 	.word	0xd1b71759
+ 8000854:	0a7c5ac5 	.word	0x0a7c5ac5
 
-0800089c <SevenSegLEDsScan>:
+08000858 <SevenSegLEDsScan>:
 
 
 void SevenSegLEDsScan(){
- 800089c:	b580      	push	{r7, lr}
- 800089e:	b084      	sub	sp, #16
- 80008a0:	af00      	add	r7, sp, #0
+ 8000858:	b580      	push	{r7, lr}
+ 800085a:	b084      	sub	sp, #16
+ 800085c:	af00      	add	r7, sp, #0
 	uint8_t* curr_digit=SevenSegLEDsHandler(SevenSegBuffer,SevenSegScanState);
- 80008a2:	4b32      	ldr	r3, [pc, #200]	@ (800096c <SevenSegLEDsScan+0xd0>)
- 80008a4:	781b      	ldrb	r3, [r3, #0]
- 80008a6:	4619      	mov	r1, r3
- 80008a8:	4831      	ldr	r0, [pc, #196]	@ (8000970 <SevenSegLEDsScan+0xd4>)
- 80008aa:	f7ff fe7d 	bl	80005a8 <SevenSegLEDsHandler>
- 80008ae:	60b8      	str	r0, [r7, #8]
+ 800085e:	4b32      	ldr	r3, [pc, #200]	@ (8000928 <SevenSegLEDsScan+0xd0>)
+ 8000860:	781b      	ldrb	r3, [r3, #0]
+ 8000862:	4619      	mov	r1, r3
+ 8000864:	4831      	ldr	r0, [pc, #196]	@ (800092c <SevenSegLEDsScan+0xd4>)
+ 8000866:	f7ff fe7d 	bl	8000564 <SevenSegLEDsHandler>
+ 800086a:	60b8      	str	r0, [r7, #8]
 	uint8_t curr_scan;
 	switch (SevenSegScanState) {
- 80008b0:	4b2e      	ldr	r3, [pc, #184]	@ (800096c <SevenSegLEDsScan+0xd0>)
- 80008b2:	781b      	ldrb	r3, [r3, #0]
- 80008b4:	2b05      	cmp	r3, #5
- 80008b6:	d833      	bhi.n	8000920 <SevenSegLEDsScan+0x84>
- 80008b8:	a201      	add	r2, pc, #4	@ (adr r2, 80008c0 <SevenSegLEDsScan+0x24>)
- 80008ba:	f852 f023 	ldr.w	pc, [r2, r3, lsl #2]
- 80008be:	bf00      	nop
- 80008c0:	080008d9 	.word	0x080008d9
- 80008c4:	080008e5 	.word	0x080008e5
- 80008c8:	080008f1 	.word	0x080008f1
- 80008cc:	080008fd 	.word	0x080008fd
- 80008d0:	08000909 	.word	0x08000909
- 80008d4:	08000915 	.word	0x08000915
+ 800086c:	4b2e      	ldr	r3, [pc, #184]	@ (8000928 <SevenSegLEDsScan+0xd0>)
+ 800086e:	781b      	ldrb	r3, [r3, #0]
+ 8000870:	2b05      	cmp	r3, #5
+ 8000872:	d833      	bhi.n	80008dc <SevenSegLEDsScan+0x84>
+ 8000874:	a201      	add	r2, pc, #4	@ (adr r2, 800087c <SevenSegLEDsScan+0x24>)
+ 8000876:	f852 f023 	ldr.w	pc, [r2, r3, lsl #2]
+ 800087a:	bf00      	nop
+ 800087c:	08000895 	.word	0x08000895
+ 8000880:	080008a1 	.word	0x080008a1
+ 8000884:	080008ad 	.word	0x080008ad
+ 8000888:	080008b9 	.word	0x080008b9
+ 800088c:	080008c5 	.word	0x080008c5
+ 8000890:	080008d1 	.word	0x080008d1
 		case 0:
 			curr_scan=0b00100000;
- 80008d8:	2320      	movs	r3, #32
- 80008da:	73fb      	strb	r3, [r7, #15]
+ 8000894:	2320      	movs	r3, #32
+ 8000896:	73fb      	strb	r3, [r7, #15]
 			SevenSegScanState=1;
- 80008dc:	4b23      	ldr	r3, [pc, #140]	@ (800096c <SevenSegLEDsScan+0xd0>)
- 80008de:	2201      	movs	r2, #1
- 80008e0:	701a      	strb	r2, [r3, #0]
+ 8000898:	4b23      	ldr	r3, [pc, #140]	@ (8000928 <SevenSegLEDsScan+0xd0>)
+ 800089a:	2201      	movs	r2, #1
+ 800089c:	701a      	strb	r2, [r3, #0]
 			break;
- 80008e2:	e023      	b.n	800092c <SevenSegLEDsScan+0x90>
+ 800089e:	e023      	b.n	80008e8 <SevenSegLEDsScan+0x90>
 		case 1:
 			curr_scan=0b00010000;
- 80008e4:	2310      	movs	r3, #16
- 80008e6:	73fb      	strb	r3, [r7, #15]
+ 80008a0:	2310      	movs	r3, #16
+ 80008a2:	73fb      	strb	r3, [r7, #15]
 			SevenSegScanState=2;
- 80008e8:	4b20      	ldr	r3, [pc, #128]	@ (800096c <SevenSegLEDsScan+0xd0>)
- 80008ea:	2202      	movs	r2, #2
- 80008ec:	701a      	strb	r2, [r3, #0]
+ 80008a4:	4b20      	ldr	r3, [pc, #128]	@ (8000928 <SevenSegLEDsScan+0xd0>)
+ 80008a6:	2202      	movs	r2, #2
+ 80008a8:	701a      	strb	r2, [r3, #0]
 			break;
- 80008ee:	e01d      	b.n	800092c <SevenSegLEDsScan+0x90>
+ 80008aa:	e01d      	b.n	80008e8 <SevenSegLEDsScan+0x90>
 		case 2:
 			curr_scan=0b00001000;
- 80008f0:	2308      	movs	r3, #8
- 80008f2:	73fb      	strb	r3, [r7, #15]
+ 80008ac:	2308      	movs	r3, #8
+ 80008ae:	73fb      	strb	r3, [r7, #15]
 			SevenSegScanState=3;
- 80008f4:	4b1d      	ldr	r3, [pc, #116]	@ (800096c <SevenSegLEDsScan+0xd0>)
- 80008f6:	2203      	movs	r2, #3
- 80008f8:	701a      	strb	r2, [r3, #0]
+ 80008b0:	4b1d      	ldr	r3, [pc, #116]	@ (8000928 <SevenSegLEDsScan+0xd0>)
+ 80008b2:	2203      	movs	r2, #3
+ 80008b4:	701a      	strb	r2, [r3, #0]
 			break;
- 80008fa:	e017      	b.n	800092c <SevenSegLEDsScan+0x90>
+ 80008b6:	e017      	b.n	80008e8 <SevenSegLEDsScan+0x90>
 		case 3:
 			curr_scan=0b00000100;
- 80008fc:	2304      	movs	r3, #4
- 80008fe:	73fb      	strb	r3, [r7, #15]
+ 80008b8:	2304      	movs	r3, #4
+ 80008ba:	73fb      	strb	r3, [r7, #15]
 			SevenSegScanState=4;
- 8000900:	4b1a      	ldr	r3, [pc, #104]	@ (800096c <SevenSegLEDsScan+0xd0>)
- 8000902:	2204      	movs	r2, #4
- 8000904:	701a      	strb	r2, [r3, #0]
+ 80008bc:	4b1a      	ldr	r3, [pc, #104]	@ (8000928 <SevenSegLEDsScan+0xd0>)
+ 80008be:	2204      	movs	r2, #4
+ 80008c0:	701a      	strb	r2, [r3, #0]
 			break;
- 8000906:	e011      	b.n	800092c <SevenSegLEDsScan+0x90>
+ 80008c2:	e011      	b.n	80008e8 <SevenSegLEDsScan+0x90>
 		case 4:
 			curr_scan=0b00000010;
- 8000908:	2302      	movs	r3, #2
- 800090a:	73fb      	strb	r3, [r7, #15]
+ 80008c4:	2302      	movs	r3, #2
+ 80008c6:	73fb      	strb	r3, [r7, #15]
 			SevenSegScanState=5;
- 800090c:	4b17      	ldr	r3, [pc, #92]	@ (800096c <SevenSegLEDsScan+0xd0>)
- 800090e:	2205      	movs	r2, #5
- 8000910:	701a      	strb	r2, [r3, #0]
+ 80008c8:	4b17      	ldr	r3, [pc, #92]	@ (8000928 <SevenSegLEDsScan+0xd0>)
+ 80008ca:	2205      	movs	r2, #5
+ 80008cc:	701a      	strb	r2, [r3, #0]
 			break;
- 8000912:	e00b      	b.n	800092c <SevenSegLEDsScan+0x90>
+ 80008ce:	e00b      	b.n	80008e8 <SevenSegLEDsScan+0x90>
 		case 5:
 			curr_scan=0b00000001;
- 8000914:	2301      	movs	r3, #1
- 8000916:	73fb      	strb	r3, [r7, #15]
+ 80008d0:	2301      	movs	r3, #1
+ 80008d2:	73fb      	strb	r3, [r7, #15]
 			SevenSegScanState=0;
- 8000918:	4b14      	ldr	r3, [pc, #80]	@ (800096c <SevenSegLEDsScan+0xd0>)
- 800091a:	2200      	movs	r2, #0
- 800091c:	701a      	strb	r2, [r3, #0]
+ 80008d4:	4b14      	ldr	r3, [pc, #80]	@ (8000928 <SevenSegLEDsScan+0xd0>)
+ 80008d6:	2200      	movs	r2, #0
+ 80008d8:	701a      	strb	r2, [r3, #0]
 			break;
- 800091e:	e005      	b.n	800092c <SevenSegLEDsScan+0x90>
+ 80008da:	e005      	b.n	80008e8 <SevenSegLEDsScan+0x90>
 		default:
 			curr_scan=0b00000001;
- 8000920:	2301      	movs	r3, #1
- 8000922:	73fb      	strb	r3, [r7, #15]
+ 80008dc:	2301      	movs	r3, #1
+ 80008de:	73fb      	strb	r3, [r7, #15]
 			SevenSegScanState=0;
- 8000924:	4b11      	ldr	r3, [pc, #68]	@ (800096c <SevenSegLEDsScan+0xd0>)
- 8000926:	2200      	movs	r2, #0
- 8000928:	701a      	strb	r2, [r3, #0]
+ 80008e0:	4b11      	ldr	r3, [pc, #68]	@ (8000928 <SevenSegLEDsScan+0xd0>)
+ 80008e2:	2200      	movs	r2, #0
+ 80008e4:	701a      	strb	r2, [r3, #0]
 			break;
- 800092a:	bf00      	nop
+ 80008e6:	bf00      	nop
 	}
 	uint8_t led_buffer[]={curr_scan,digitMap[curr_digit[2]],digitMap[curr_digit[1]],digitMap[curr_digit[0]]};
- 800092c:	7bfb      	ldrb	r3, [r7, #15]
- 800092e:	713b      	strb	r3, [r7, #4]
- 8000930:	68bb      	ldr	r3, [r7, #8]
- 8000932:	3302      	adds	r3, #2
- 8000934:	781b      	ldrb	r3, [r3, #0]
- 8000936:	461a      	mov	r2, r3
- 8000938:	4b0e      	ldr	r3, [pc, #56]	@ (8000974 <SevenSegLEDsScan+0xd8>)
- 800093a:	5c9b      	ldrb	r3, [r3, r2]
- 800093c:	717b      	strb	r3, [r7, #5]
- 800093e:	68bb      	ldr	r3, [r7, #8]
- 8000940:	3301      	adds	r3, #1
- 8000942:	781b      	ldrb	r3, [r3, #0]
- 8000944:	461a      	mov	r2, r3
- 8000946:	4b0b      	ldr	r3, [pc, #44]	@ (8000974 <SevenSegLEDsScan+0xd8>)
- 8000948:	5c9b      	ldrb	r3, [r3, r2]
- 800094a:	71bb      	strb	r3, [r7, #6]
- 800094c:	68bb      	ldr	r3, [r7, #8]
- 800094e:	781b      	ldrb	r3, [r3, #0]
- 8000950:	461a      	mov	r2, r3
- 8000952:	4b08      	ldr	r3, [pc, #32]	@ (8000974 <SevenSegLEDsScan+0xd8>)
- 8000954:	5c9b      	ldrb	r3, [r3, r2]
- 8000956:	71fb      	strb	r3, [r7, #7]
+ 80008e8:	7bfb      	ldrb	r3, [r7, #15]
+ 80008ea:	713b      	strb	r3, [r7, #4]
+ 80008ec:	68bb      	ldr	r3, [r7, #8]
+ 80008ee:	3302      	adds	r3, #2
+ 80008f0:	781b      	ldrb	r3, [r3, #0]
+ 80008f2:	461a      	mov	r2, r3
+ 80008f4:	4b0e      	ldr	r3, [pc, #56]	@ (8000930 <SevenSegLEDsScan+0xd8>)
+ 80008f6:	5c9b      	ldrb	r3, [r3, r2]
+ 80008f8:	717b      	strb	r3, [r7, #5]
+ 80008fa:	68bb      	ldr	r3, [r7, #8]
+ 80008fc:	3301      	adds	r3, #1
+ 80008fe:	781b      	ldrb	r3, [r3, #0]
+ 8000900:	461a      	mov	r2, r3
+ 8000902:	4b0b      	ldr	r3, [pc, #44]	@ (8000930 <SevenSegLEDsScan+0xd8>)
+ 8000904:	5c9b      	ldrb	r3, [r3, r2]
+ 8000906:	71bb      	strb	r3, [r7, #6]
+ 8000908:	68bb      	ldr	r3, [r7, #8]
+ 800090a:	781b      	ldrb	r3, [r3, #0]
+ 800090c:	461a      	mov	r2, r3
+ 800090e:	4b08      	ldr	r3, [pc, #32]	@ (8000930 <SevenSegLEDsScan+0xd8>)
+ 8000910:	5c9b      	ldrb	r3, [r3, r2]
+ 8000912:	71fb      	strb	r3, [r7, #7]
 	ShiftOut_SPI(led_buffer, 4);
- 8000958:	1d3b      	adds	r3, r7, #4
- 800095a:	2104      	movs	r1, #4
- 800095c:	4618      	mov	r0, r3
- 800095e:	f7ff fe01 	bl	8000564 <ShiftOut_SPI>
+ 8000914:	1d3b      	adds	r3, r7, #4
+ 8000916:	2104      	movs	r1, #4
+ 8000918:	4618      	mov	r0, r3
+ 800091a:	f000 f80b 	bl	8000934 <ShiftOut_SPI>
 }
- 8000962:	bf00      	nop
- 8000964:	3710      	adds	r7, #16
- 8000966:	46bd      	mov	sp, r7
- 8000968:	bd80      	pop	{r7, pc}
- 800096a:	bf00      	nop
- 800096c:	2000004e 	.word	0x2000004e
- 8000970:	2000000c 	.word	0x2000000c
- 8000974:	20000000 	.word	0x20000000
+ 800091e:	bf00      	nop
+ 8000920:	3710      	adds	r7, #16
+ 8000922:	46bd      	mov	sp, r7
+ 8000924:	bd80      	pop	{r7, pc}
+ 8000926:	bf00      	nop
+ 8000928:	2000004e 	.word	0x2000004e
+ 800092c:	2000000c 	.word	0x2000000c
+ 8000930:	20000000 	.word	0x20000000
+
+08000934 <ShiftOut_SPI>:
+ *      Author: clong
+ */
+#include "SPI_shift.h"
+
+void ShiftOut_SPI(uint8_t *data, size_t size)
+{
+ 8000934:	b580      	push	{r7, lr}
+ 8000936:	b082      	sub	sp, #8
+ 8000938:	af00      	add	r7, sp, #0
+ 800093a:	6078      	str	r0, [r7, #4]
+ 800093c:	6039      	str	r1, [r7, #0]
+
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET); // Pull STCP (Latch) low
+ 800093e:	2200      	movs	r2, #0
+ 8000940:	f44f 4180 	mov.w	r1, #16384	@ 0x4000
+ 8000944:	480a      	ldr	r0, [pc, #40]	@ (8000970 <ShiftOut_SPI+0x3c>)
+ 8000946:	f000 fe3c 	bl	80015c2 <HAL_GPIO_WritePin>
+    HAL_SPI_Transmit(&hspi2, data, size, 300); // Transmit data
+ 800094a:	683b      	ldr	r3, [r7, #0]
+ 800094c:	b29a      	uxth	r2, r3
+ 800094e:	f44f 7396 	mov.w	r3, #300	@ 0x12c
+ 8000952:	6879      	ldr	r1, [r7, #4]
+ 8000954:	4807      	ldr	r0, [pc, #28]	@ (8000974 <ShiftOut_SPI+0x40>)
+ 8000956:	f001 faaf 	bl	8001eb8 <HAL_SPI_Transmit>
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET); // Pull STCP (Latch) high
+ 800095a:	2201      	movs	r2, #1
+ 800095c:	f44f 4180 	mov.w	r1, #16384	@ 0x4000
+ 8000960:	4803      	ldr	r0, [pc, #12]	@ (8000970 <ShiftOut_SPI+0x3c>)
+ 8000962:	f000 fe2e 	bl	80015c2 <HAL_GPIO_WritePin>
+
+}
+ 8000966:	bf00      	nop
+ 8000968:	3708      	adds	r7, #8
+ 800096a:	46bd      	mov	sp, r7
+ 800096c:	bd80      	pop	{r7, pc}
+ 800096e:	bf00      	nop
+ 8000970:	40010c00 	.word	0x40010c00
+ 8000974:	200000ac 	.word	0x200000ac
 
 08000978 <main>:
 /**
@@ -1313,7 +1313,7 @@ int main(void)
  80009b8:	d105      	bne.n	80009c6 <main+0x4e>
 
 		  SevenSegLEDsScan();
- 80009ba:	f7ff ff6f 	bl	800089c <SevenSegLEDsScan>
+ 80009ba:	f7ff ff4d 	bl	8000858 <SevenSegLEDsScan>
 		  setTimer(0,5);
  80009be:	2105      	movs	r1, #5
  80009c0:	2000      	movs	r0, #0
