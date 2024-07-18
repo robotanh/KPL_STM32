@@ -20,6 +20,8 @@ uint8_t lastKeyPressed = 0xFF;
 uint32_t accumulatedNumber = 0;
 uint8_t numberOfDigits = 0;
 
+uint32_t row1 =0; 	//Display total liters
+uint32_t row2 =0;	//Display total liters
 
 typedef enum {
     KEY_IDLE,
@@ -90,6 +92,19 @@ uint8_t KeyPad_Scan(void) {
     return 0xFF;
 }
 
+void formatTotalLiters(uint32_t total, uint32_t* buffer1, uint32_t* buffer2)
+{
+	if (total < 100000000) {
+		* buffer1 = total / 1000000;
+		* buffer2 = total % 1000000;
+		LEDPointFlag = 3;
+
+	} else {
+		* buffer1 = total / 100000000;
+		* buffer2 = 0;
+		LEDPointFlag = 2;
+	}
+}
 
 void KeyLogic() {
 	keyPressed = KeyPad_Scan();
@@ -195,8 +210,9 @@ void KeyLogic_Action() {
             SevenSegBuffer[2] = 111111;
             break;
         case SEQ_PRESSED_T_L:
-            SevenSegBuffer[0] = 0;
-            SevenSegBuffer[1] = 123456;
+        	formatTotalLiters(totalLiters, &row1, &row2);
+            SevenSegBuffer[0] = row1;
+            SevenSegBuffer[1] = row2;
             SevenSegBuffer[2] = 0;
             break;
         case SEQ_PRESSED_T_F3:
@@ -213,6 +229,7 @@ void KeyLogic_Action() {
 			SevenSegBuffer[0] = accumulatedNumber;
 			SevenSegBuffer[1] = 0;
 			SevenSegBuffer[2] = 0;
+        	LEDPointFlag = 6;
 			break;
         default:
             SevenSegBuffer[0] = 0;

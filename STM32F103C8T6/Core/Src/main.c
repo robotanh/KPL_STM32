@@ -47,6 +47,9 @@ SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi2;
 TIM_HandleTypeDef htim2;
 
+uint32_t password = 345;
+uint32_t totalLiters = 68123450;
+int LEDPointFlag = 6; //No LEDs have point
 
 /* USER CODE BEGIN PV */
 uint8_t keyPressed = 0xFF;
