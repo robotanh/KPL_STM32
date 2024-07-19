@@ -36,7 +36,8 @@ extern char SevenSegBuffer[3][7];
 extern uint32_t password;
 extern uint32_t lcd_num;
 extern uint8_t keyPressed;
-extern uint32_t totalLiters;
+extern long unsigned int totalLiters;		//Total liters from beginning
+extern long unsigned int totalLitersShift;	//Total liter per shift, ( > 1000000 return 0)
 
 extern int LEDPointFlag; // 0 -> 5 to choose which LED has point
 
