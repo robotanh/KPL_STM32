@@ -7,6 +7,9 @@
 
 #ifndef INC_LED3X6_H_
 #define INC_LED3X6_H_
+#include "SPI_shift.h"
+#include "main.h"
+#include <string.h>
 
 //extern uint8_t digitMapWithOutDP[10];
 //extern uint8_t digitMapWithDP[10];

@@ -8,6 +8,9 @@
 #define __KEYPAD_H
 
 #include "stm32f1xx_hal.h"
+#include "main.h"
+#include <stdio.h>
+
 extern uint8_t keyPressed;
 
 void KeyPad_Init(void);
