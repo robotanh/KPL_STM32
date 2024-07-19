@@ -1,4 +1,4 @@
-../Core/Src/LED3x6.c:55:9:CharToSegment	12
-../Core/Src/LED3x6.c:81:10:SevenSegLEDsHandler	4
-../Core/Src/LED3x6.c:98:6:UpdateDisplayBuffer	10
-../Core/Src/LED3x6.c:149:6:SevenSegLEDsScan	1
+../Core/Src/LED3x6.c:57:9:CharToSegment	12
+../Core/Src/LED3x6.c:83:10:SevenSegLEDsHandler	4
+../Core/Src/LED3x6.c:100:6:UpdateDisplayBuffer	10
+../Core/Src/LED3x6.c:151:6:SevenSegLEDsScan	1

@@ -34,7 +34,7 @@ uint8_t digitMapWithDP[10] = {
     0b00010000  // 9 with DP
 };
 
-uint8_t specialCharMap[9] = {
+uint8_t specialCharMap[11] = {
     0b11000111, // 'L'
     0b01111111, // '.'
     0b11111000, // 'T'
@@ -43,7 +43,9 @@ uint8_t specialCharMap[9] = {
     0b10010010, // 'S'
     0b10001001, // 'H'
     0b11001111, // 'I'
-    0b10001110  // 'F'
+    0b10001110, // 'F'
+	0b10111100,	// 'G'
+	0b11001110	// 'P'
 };
 
 volatile uint8_t SevenSegScanState=0;

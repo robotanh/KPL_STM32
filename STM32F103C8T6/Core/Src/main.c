@@ -54,6 +54,8 @@ uint8_t keyPressed = 0xFF;
 uint32_t password = 345;
 long unsigned int totalLiters = 25173777; //theo đơn vị ml tức là 1000 = 1 lít
 long unsigned int totalLitersShift = 123456999;   //lít trong ca, có thể được reset khi giao ca
+
+uint32_t currPrice = 23000; // Giá xăng trên lít hiện tại (vnđ/L)
 int LEDPointFlag = 6; //No LEDs have point
 /* USER CODE END PV */
 
