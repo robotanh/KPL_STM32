@@ -39,6 +39,8 @@ typedef enum {
 	SEQ_NUMBER,
 /////////////P KEY//////////////
 	SEQ_PRESSED_P,
+	SEQ_PRESSED_P_F2_PSWRD,
+	SEQ_PRESSED_P_F2_PSWRD_ROUND,
 	SEQ_PRESSED_P_NUM,
 	SEQ_PRESSED_P_PSWRD_SETPRICE,
 /////////////T KEY//////////////
@@ -49,7 +51,13 @@ typedef enum {
 	SEQ_PRESSED_T_F4,
 } SequenceState;
 
+typedef enum {
+	PRICE_ROUND_50,
+	PRICE_ROUND_100,
+	PRICE_DEFAULT
+} PriceState;
 
+PriceState currentPriceState = PRICE_ROUND_50;
 KeyState keyState = KEY_IDLE;
 SequenceState seqState = SEQ_IDLE;
 
@@ -141,9 +149,13 @@ void KeyLogic() {
 				break;
 /////////////////////////////////////////////////////KEY B/////////////////////////////////////////////////////////
 			case 'B':
-				snprintf(SevenSegBuffer[0], sizeof(SevenSegBuffer[0]), "%06d", 0);
-				snprintf(SevenSegBuffer[1], sizeof(SevenSegBuffer[1]), "%06d", 100000);
-				snprintf(SevenSegBuffer[2], sizeof(SevenSegBuffer[2]), "%06d", 0);
+				if(seqState==SEQ_PRESSED_P){
+					seqState=SEQ_PRESSED_P_F2_PSWRD;
+				}else{
+					seqState=SEQ_IDLE;
+					numberOfDigits = 0;
+					accumulatedNumber = 0;
+				}
 				break;
 /////////////////////////////////////////////////////KEY C/////////////////////////////////////////////////////////
 			case 'C':
@@ -153,19 +165,75 @@ void KeyLogic() {
 				break;
 /////////////////////////////////////////////////////KEY E/////////////////////////////////////////////////////////
 			case 'E':
-				if (seqState == SEQ_PRESSED_P_NUM&&
+				if(seqState == SEQ_IDLE){
+					seqState = SEQ_DISP_PRICE;
+				}
+				else if (seqState == SEQ_PRESSED_P_NUM&&
 					accumulatedNumber==password) {
 					seqState = SEQ_PRESSED_P_PSWRD_SETPRICE;
+					numberOfDigits = 0;
+					accumulatedNumber = 0;
+				}else if (seqState == SEQ_PRESSED_P_F2_PSWRD&&
+						accumulatedNumber==password){
+					seqState = SEQ_PRESSED_P_F2_PSWRD_ROUND;
+					numberOfDigits = 0;
+					accumulatedNumber = 0;
+				}else if (seqState == SEQ_PRESSED_P_F2_PSWRD_ROUND){
+					switch(accumulatedNumber){
+						case 0:		// round 50
+							if(currPrice%50<25){
+								roundedPrice=currPrice-(currPrice%50);
+							}else{
+								roundedPrice=currPrice-(currPrice%50)+50;
+							}
+							currentPriceState=PRICE_ROUND_50;
+							break;
+						case 1:		// round 100
+							if(currPrice%100<50){
+								roundedPrice=currPrice-(currPrice%100);
+							}else{
+								roundedPrice=currPrice-(currPrice%100)+100;
+							}
+							currentPriceState=PRICE_ROUND_100;
+							break;
+						case 2:		// no rounding
+							roundedPrice=currPrice;
+							currentPriceState=PRICE_DEFAULT;
+							break;
+						default:
+							break;
+					}
+					seqState = SEQ_IDLE;
 					numberOfDigits = 0;
 					accumulatedNumber = 0;
 				}
 				else if(seqState == SEQ_PRESSED_P_PSWRD_SETPRICE){
 					currPrice = accumulatedNumber;
+					switch (currentPriceState){
+						case PRICE_ROUND_50:
+							if(currPrice%50<25){
+								roundedPrice=currPrice-(currPrice%50);
+							}else{
+								roundedPrice=currPrice-(currPrice%50)+50;
+							}
+							break;
+						case PRICE_ROUND_100:
+							if(currPrice%100<50){
+								roundedPrice=currPrice-(currPrice%100);
+							}else{
+								roundedPrice=currPrice-(currPrice%100)+100;
+							}
+							break;
+						default:
+							roundedPrice=currPrice;
+							break;
+					}
 					seqState = SEQ_IDLE;
 					numberOfDigits = 0;
 					accumulatedNumber = 0;
 				}
-				else if(seqState == SEQ_ENTER_OLD_PASSWORD&&accumulatedNumber == password){
+				else if(seqState == SEQ_ENTER_OLD_PASSWORD&&
+						accumulatedNumber == password){
 					seqState = SEQ_ENTER_NEW_PASSWORD;
 					numberOfDigits = 0;
 					accumulatedNumber = 0;
@@ -252,6 +320,7 @@ void KeyLogic() {
 						accumulatedNumber = keyPressed - '0';
 						numberOfDigits = 1;
 					}else if (seqState == SEQ_PRESSED_P_NUM ||
+							seqState == SEQ_PRESSED_P_F2_PSWRD ||
 							seqState == SEQ_PRESSED_P_PSWRD_SETPRICE||
 							seqState == SEQ_ENTER_OLD_PASSWORD ||
 							seqState == SEQ_ENTER_NEW_PASSWORD ||
@@ -262,8 +331,12 @@ void KeyLogic() {
 							numberOfDigits++;
 						}
 
-					}
-					else{
+					}else if(seqState == SEQ_PRESSED_P_F2_PSWRD_ROUND){
+						if (numberOfDigits < 1) {
+							accumulatedNumber = accumulatedNumber * 10 + (keyPressed - '0');
+							numberOfDigits++;
+						}
+					}else{
 						seqState = SEQ_NUMBER;
 						accumulatedNumber = keyPressed - '0';
 						numberOfDigits = 1;
@@ -290,7 +363,7 @@ void KeyLogic_Action() {
             break;
         case SEQ_DISP_PRICE:
         	snprintf(SevenSegBuffer[0], sizeof(SevenSegBuffer[0]), "GIA   ");
-			snprintf(SevenSegBuffer[1], sizeof(SevenSegBuffer[1]), "%06ld", currPrice);
+			snprintf(SevenSegBuffer[1], sizeof(SevenSegBuffer[1]), "%06ld", roundedPrice);
 			snprintf(SevenSegBuffer[2], sizeof(SevenSegBuffer[2]), "%06d", 0);
 			break;
         case SEQ_ENTER_OLD_PASSWORD:
@@ -311,6 +384,16 @@ void KeyLogic_Action() {
         	snprintf(SevenSegBuffer[0], sizeof(SevenSegBuffer[0]), "%06ld", accumulatedNumber);
 			snprintf(SevenSegBuffer[1], sizeof(SevenSegBuffer[1]), "%06d", 0);
 			snprintf(SevenSegBuffer[2], sizeof(SevenSegBuffer[2]), "P     ");
+			break;
+        case SEQ_PRESSED_P_F2_PSWRD:
+        	snprintf(SevenSegBuffer[0], sizeof(SevenSegBuffer[0]), "%06ld", accumulatedNumber);
+			snprintf(SevenSegBuffer[1], sizeof(SevenSegBuffer[1]), "%06d", 0);
+			snprintf(SevenSegBuffer[2], sizeof(SevenSegBuffer[2]), "SL ARO");
+			break;
+        case SEQ_PRESSED_P_F2_PSWRD_ROUND:
+        	snprintf(SevenSegBuffer[0], sizeof(SevenSegBuffer[0]), "0.  50");
+			snprintf(SevenSegBuffer[1], sizeof(SevenSegBuffer[1]), "1. 100");
+			snprintf(SevenSegBuffer[2], sizeof(SevenSegBuffer[2]), "2. 1..");
 			break;
         case SEQ_PRESSED_P_NUM:
             snprintf(SevenSegBuffer[0], sizeof(SevenSegBuffer[0]), "%06ld", accumulatedNumber);
