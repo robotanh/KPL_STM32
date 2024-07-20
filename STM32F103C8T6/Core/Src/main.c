@@ -125,6 +125,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 
   while (1) {
+	  KeyLogic();
 	  // TIMER 0 /////////////////////////////////////
 	  if(timer_flag[0]==1){
 
@@ -134,7 +135,6 @@ int main(void)
 
 	  // TIMER 1 /////////////////////////////////////
 	  if(timer_flag[1]==1){
-		  KeyLogic();
 		  KeyLogic_Action();
 		  setTimer(1,10);
 	  }

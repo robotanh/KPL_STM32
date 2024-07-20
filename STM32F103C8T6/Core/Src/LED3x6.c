@@ -34,18 +34,22 @@ uint8_t digitMapWithDP[10] = {
     0b00010000  // 9 with DP
 };
 
-uint8_t specialCharMap[11] = {
+uint8_t specialCharMap[15] = {
     0b11000111, // 'L'
     0b01111111, // '.'
     0b11111000, // 'T'
-    0b11000000, // '0'
+    0b11000000, // 'O'
     0b10001000, // 'A'
     0b10010010, // 'S'
     0b10001001, // 'H'
     0b11001111, // 'I'
     0b10001110, // 'F'
 	0b10111100,	// 'G'
-	0b11001110	// 'P'
+	0b10001100,	// 'P'
+    0b10110001, // 'C'
+    0b10000110, // 'E'
+    0b11000001, // 'U'
+    0b11001000, // 'N'
 };
 
 volatile uint8_t SevenSegScanState=0;
@@ -62,11 +66,11 @@ uint8_t CharToSegment(char c) {
     } else if (c == '.') {
         return specialCharMap[1];
     } else if (c == 'T') {
-		return specialCharMap[2];
+        return specialCharMap[2];
     } else if (c == 'O') {
-		return specialCharMap[3];
+        return specialCharMap[3];
     } else if (c == 'A') {
-		return specialCharMap[4];
+        return specialCharMap[4];
     } else if (c == 'S') {
         return specialCharMap[5];
     } else if (c == 'H') {
@@ -75,6 +79,18 @@ uint8_t CharToSegment(char c) {
         return specialCharMap[7];
     } else if (c == 'F') {
         return specialCharMap[8];
+    } else if (c == 'G') {
+        return specialCharMap[9];
+    } else if (c == 'P') {
+        return specialCharMap[10];
+    } else if (c == 'C') {
+        return specialCharMap[11];
+    } else if (c == 'E') {
+        return specialCharMap[12];
+    } else if (c == 'U') {
+        return specialCharMap[13];
+    } else if (c == 'N') {
+        return specialCharMap[14];
     } else {
         return 0b11111111; // Blank
     }

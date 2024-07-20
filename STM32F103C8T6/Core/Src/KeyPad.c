@@ -34,6 +34,9 @@ typedef enum {
     SEQ_IDLE,
 /////////////E KEY//////////////
 	SEQ_DISP_PRICE,
+	SEQ_ENTER_OLD_PASSWORD,
+	SEQ_ENTER_NEW_PASSWORD,
+	SEQ_NUMBER,
 /////////////P KEY//////////////
 	SEQ_PRESSED_P,
 	SEQ_PRESSED_P_NUM,
@@ -44,7 +47,6 @@ typedef enum {
 	SEQ_PRESSED_T_$,
 	SEQ_PRESSED_T_F3,
 	SEQ_PRESSED_T_F4,
-	SEQ_NUMBER
 } SequenceState;
 
 
@@ -123,46 +125,53 @@ void formatTotalLitersShift(long unsigned int total, uint32_t* buffer1, uint32_t
 	} else {
 		* buffer1 =0;
 		* buffer2 = 0;
-		LEDPointFlag = -11;
+		LEDPointFlag = -1;
 	}
 }
 
 void KeyLogic() {
 	keyPressed = KeyPad_Scan();
-	if (keyPressed != 0xFF) {
+    if (keyPressed != 0xFF) {
 		switch (keyPressed) {
+/////////////////////////////////////////////////////KEY A/////////////////////////////////////////////////////////
 			case 'A':
 				snprintf(SevenSegBuffer[0], sizeof(SevenSegBuffer[0]), "%06d", 0);
 				snprintf(SevenSegBuffer[1], sizeof(SevenSegBuffer[1]), "%06d", 10000);
 				snprintf(SevenSegBuffer[2], sizeof(SevenSegBuffer[2]), "%06d", 0);
 				break;
+/////////////////////////////////////////////////////KEY B/////////////////////////////////////////////////////////
 			case 'B':
 				snprintf(SevenSegBuffer[0], sizeof(SevenSegBuffer[0]), "%06d", 0);
 				snprintf(SevenSegBuffer[1], sizeof(SevenSegBuffer[1]), "%06d", 100000);
 				snprintf(SevenSegBuffer[2], sizeof(SevenSegBuffer[2]), "%06d", 0);
 				break;
+/////////////////////////////////////////////////////KEY C/////////////////////////////////////////////////////////
 			case 'C':
 				snprintf(SevenSegBuffer[0], sizeof(SevenSegBuffer[0]), "%06d", 0);
 				snprintf(SevenSegBuffer[1], sizeof(SevenSegBuffer[1]), "%06d", 0);
 				snprintf(SevenSegBuffer[2], sizeof(SevenSegBuffer[2]), "%06d", 1);
 				break;
+/////////////////////////////////////////////////////KEY E/////////////////////////////////////////////////////////
 			case 'E':
-				if(seqState == SEQ_IDLE){
-					seqState = SEQ_DISP_PRICE;
-				}
-				else if (seqState == SEQ_PRESSED_P_NUM) {
-					if(accumulatedNumber==password){
-						seqState = SEQ_PRESSED_P_PSWRD_SETPRICE;
-						numberOfDigits = 0;
-						accumulatedNumber = 0;
-					}else{
-						seqState = SEQ_IDLE;
-						numberOfDigits = 0;
-						accumulatedNumber = 0;
-					}
+				if (seqState == SEQ_PRESSED_P_NUM&&
+					accumulatedNumber==password) {
+					seqState = SEQ_PRESSED_P_PSWRD_SETPRICE;
+					numberOfDigits = 0;
+					accumulatedNumber = 0;
 				}
 				else if(seqState == SEQ_PRESSED_P_PSWRD_SETPRICE){
 					currPrice = accumulatedNumber;
+					seqState = SEQ_IDLE;
+					numberOfDigits = 0;
+					accumulatedNumber = 0;
+				}
+				else if(seqState == SEQ_ENTER_OLD_PASSWORD&&accumulatedNumber == password){
+					seqState = SEQ_ENTER_NEW_PASSWORD;
+					numberOfDigits = 0;
+					accumulatedNumber = 0;
+				}
+				else if(seqState == SEQ_ENTER_NEW_PASSWORD){
+					password = accumulatedNumber;
 					seqState = SEQ_IDLE;
 					numberOfDigits = 0;
 					accumulatedNumber = 0;
@@ -173,6 +182,7 @@ void KeyLogic() {
 					accumulatedNumber = 0;
 				}
 				break;
+/////////////////////////////////////////////////////KEY P/////////////////////////////////////////////////////////
 			case 'P':
 				if (seqState == SEQ_IDLE) {
 					seqState = SEQ_PRESSED_P;
@@ -182,6 +192,7 @@ void KeyLogic() {
 					accumulatedNumber = 0;
 				}
 				break;
+/////////////////////////////////////////////////////KEY T/////////////////////////////////////////////////////////
 			case 'T':
 				if (seqState == SEQ_IDLE) {
 					seqState = SEQ_PRESSED_T;
@@ -191,6 +202,7 @@ void KeyLogic() {
 					accumulatedNumber = 0;
 				}
 				break;
+/////////////////////////////////////////////////////KEY $/////////////////////////////////////////////////////////
 			case '$':
 				if (seqState == SEQ_PRESSED_T) {
 					seqState = SEQ_PRESSED_T_$;
@@ -200,6 +212,7 @@ void KeyLogic() {
 					accumulatedNumber = 0;
 				}
 				break;
+/////////////////////////////////////////////////////KEY L/////////////////////////////////////////////////////////
 			case 'L':
 				if (seqState == SEQ_PRESSED_T) {
 					seqState = SEQ_PRESSED_T_L;
@@ -209,15 +222,19 @@ void KeyLogic() {
 					accumulatedNumber = 0;
 				}
 				break;
+/////////////////////////////////////////////////////KEY D/////////////////////////////////////////////////////////
 			case 'D':
 				if (seqState == SEQ_PRESSED_T) {
-					seqState = SEQ_PRESSED_T_F3;
+					seqState = SEQ_ENTER_OLD_PASSWORD;
+					numberOfDigits = 0;
+					accumulatedNumber = 0;
 				} else {
 					seqState = SEQ_IDLE;
 					numberOfDigits = 0;
 					accumulatedNumber = 0;
 				}
 				break;
+/////////////////////////////////////////////////////KEY F/////////////////////////////////////////////////////////
 			case 'F':
 				if (seqState == SEQ_PRESSED_T) {
 					seqState = SEQ_PRESSED_T_F4;
@@ -228,16 +245,28 @@ void KeyLogic() {
 				}
 				break;
 			default:
+/////////////////////////////////////////////////////KEY 0-9/////////////////////////////////////////////////////////
 				if(keyPressed >= '0' && keyPressed <= '9') {
 					if(seqState==SEQ_PRESSED_P){
 						seqState=SEQ_PRESSED_P_NUM;
 						accumulatedNumber = keyPressed - '0';
 						numberOfDigits = 1;
-					}else if (seqState == SEQ_PRESSED_P_NUM || seqState == SEQ_PRESSED_P_PSWRD_SETPRICE) {
+					}else if (seqState == SEQ_PRESSED_P_NUM ||
+							seqState == SEQ_PRESSED_P_PSWRD_SETPRICE||
+							seqState == SEQ_ENTER_OLD_PASSWORD ||
+							seqState == SEQ_ENTER_NEW_PASSWORD ||
+							seqState == SEQ_NUMBER
+							) {
 						if (numberOfDigits < 6) {
 							accumulatedNumber = accumulatedNumber * 10 + (keyPressed - '0');
 							numberOfDigits++;
 						}
+
+					}
+					else{
+						seqState = SEQ_NUMBER;
+						accumulatedNumber = keyPressed - '0';
+						numberOfDigits = 1;
 					}
 				}else{
 					seqState = SEQ_IDLE;
@@ -261,27 +290,45 @@ void KeyLogic_Action() {
             break;
         case SEQ_DISP_PRICE:
         	snprintf(SevenSegBuffer[0], sizeof(SevenSegBuffer[0]), "GIA   ");
-			snprintf(SevenSegBuffer[1], sizeof(SevenSegBuffer[1]), "%06d", currPrice);
+			snprintf(SevenSegBuffer[1], sizeof(SevenSegBuffer[1]), "%06ld", currPrice);
 			snprintf(SevenSegBuffer[2], sizeof(SevenSegBuffer[2]), "%06d", 0);
+			break;
+        case SEQ_ENTER_OLD_PASSWORD:
+            snprintf(buffer, sizeof(buffer), "%06ld", accumulatedNumber);
+            snprintf(SevenSegBuffer[0], sizeof(SevenSegBuffer[0]), "%s", buffer);
+            snprintf(SevenSegBuffer[1], sizeof(SevenSegBuffer[1]), "0L0 ");
+            snprintf(SevenSegBuffer[2], sizeof(SevenSegBuffer[2]), "%06d", 0);
+            LEDPointFlag = -1;
+            break;
+        case SEQ_ENTER_NEW_PASSWORD:
+            snprintf(buffer, sizeof(buffer), "%06ld", accumulatedNumber);
+            snprintf(SevenSegBuffer[0], sizeof(SevenSegBuffer[0]), "%s", buffer);
+            snprintf(SevenSegBuffer[1], sizeof(SevenSegBuffer[1]), "%06d", 0);
+            snprintf(SevenSegBuffer[2], sizeof(SevenSegBuffer[2]), " NEUU ");
+            LEDPointFlag = -1;
+            break;
         case SEQ_PRESSED_P:
-        	snprintf(SevenSegBuffer[0], sizeof(SevenSegBuffer[0]), "%06d", accumulatedNumber);
+        	snprintf(SevenSegBuffer[0], sizeof(SevenSegBuffer[0]), "%06ld", accumulatedNumber);
 			snprintf(SevenSegBuffer[1], sizeof(SevenSegBuffer[1]), "%06d", 0);
 			snprintf(SevenSegBuffer[2], sizeof(SevenSegBuffer[2]), "P     ");
+			break;
         case SEQ_PRESSED_P_NUM:
-            snprintf(SevenSegBuffer[0], sizeof(SevenSegBuffer[0]), "%06d", accumulatedNumber);
+            snprintf(SevenSegBuffer[0], sizeof(SevenSegBuffer[0]), "%06ld", accumulatedNumber);
             snprintf(SevenSegBuffer[1], sizeof(SevenSegBuffer[1]), "%06d", 0);
             snprintf(SevenSegBuffer[2], sizeof(SevenSegBuffer[2]), "P88888");
+            break;
         case SEQ_PRESSED_P_PSWRD_SETPRICE:
-            snprintf(SevenSegBuffer[0], sizeof(SevenSegBuffer[0]), "%06d", accumulatedNumber);
+            snprintf(SevenSegBuffer[0], sizeof(SevenSegBuffer[0]), "%06ld", accumulatedNumber);
             snprintf(SevenSegBuffer[1], sizeof(SevenSegBuffer[1]), "%06d", 0);
             snprintf(SevenSegBuffer[2], sizeof(SevenSegBuffer[2]), "GIA   ");
+            break;
         case SEQ_PRESSED_T:
             snprintf(SevenSegBuffer[0], sizeof(SevenSegBuffer[0]), "%06d", 0);
             snprintf(SevenSegBuffer[1], sizeof(SevenSegBuffer[1]), "%06d", 0);
             snprintf(SevenSegBuffer[2], sizeof(SevenSegBuffer[2]), "%06d", 999999);
             break;
         case SEQ_PRESSED_T_$:
-        	// Format the total liters into two parts
+        	 // Format the total liters into two parts
 			formatTotalLitersShift(totalLitersShift, &row1, &row2);
 
 			// Ensure the combined string fits into the buffer
@@ -330,7 +377,9 @@ void KeyLogic_Action() {
             snprintf(SevenSegBuffer[2], sizeof(SevenSegBuffer[2]), "TOTAL ");
 
 
+
             break;
+
         case SEQ_PRESSED_T_F3:
             snprintf(SevenSegBuffer[0], sizeof(SevenSegBuffer[0]), "%06d", 333333);
             snprintf(SevenSegBuffer[1], sizeof(SevenSegBuffer[1]), "%06d", 0);
@@ -342,12 +391,12 @@ void KeyLogic_Action() {
             snprintf(SevenSegBuffer[2], sizeof(SevenSegBuffer[2]), "%06d", 0);
             break;
         case SEQ_NUMBER:
-            snprintf(buffer, sizeof(buffer), "%06ld", accumulatedNumber);
-            snprintf(SevenSegBuffer[0], sizeof(SevenSegBuffer[0]), "%s", buffer);
-            snprintf(SevenSegBuffer[1], sizeof(SevenSegBuffer[1]), "%06d", 0);
-            snprintf(SevenSegBuffer[2], sizeof(SevenSegBuffer[2]), "%06d", 0);
-            LEDPointFlag = -1;
-            break;
+			snprintf(buffer, sizeof(buffer), "%06ld", accumulatedNumber);
+			snprintf(SevenSegBuffer[0], sizeof(SevenSegBuffer[0]), "%s", buffer);
+			snprintf(SevenSegBuffer[1], sizeof(SevenSegBuffer[1]), "%06d", 0);
+			snprintf(SevenSegBuffer[2], sizeof(SevenSegBuffer[2]), "%06d", 0);
+			LEDPointFlag = -1;
+			break;
         default:
             snprintf(SevenSegBuffer[0], sizeof(SevenSegBuffer[0]), "%06d", 0);
             snprintf(SevenSegBuffer[1], sizeof(SevenSegBuffer[1]), "%06d", 0);
