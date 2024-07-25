@@ -64,7 +64,7 @@ main-build: STM32F103C8T6.elf secondary-outputs
 
 # Tool invocations
 STM32F103C8T6.elf STM32F103C8T6.map: $(OBJS) $(USER_OBJS) C:\D\Career\Internship\KyPhatLoc\Project\NewDauSo\KPL_STM32\STM32F103C8T6\STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "STM32F103C8T6.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\D\Career\Internship\KyPhatLoc\Project\NewDauSo\KPL_STM32\STM32F103C8T6\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32F103C8T6.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+	arm-none-eabi-gcc -o "STM32F103C8T6.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\D\Career\Internship\KyPhatLoc\Project\NewDauSo\KPL_STM32\STM32F103C8T6\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32F103C8T6.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
