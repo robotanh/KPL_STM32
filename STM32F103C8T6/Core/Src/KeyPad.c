@@ -43,6 +43,10 @@ typedef enum {
 	SEQ_PRESSED_P_F2_PSWRD_ROUND,
 	SEQ_PRESSED_P_NUM,
 	SEQ_PRESSED_P_PSWRD_SETPRICE,
+	SEQ_PRESSED_P_SET_F1_PRICE,
+	SEQ_PRESSED_P_SET_F2_PRICE,
+	SEQ_PRESSED_P_SET_F3_PRICE,
+	SEQ_PRESSED_P_SET_F4_PRICE,
 /////////////T KEY//////////////
     SEQ_PRESSED_T,
     SEQ_PRESSED_T_L,
@@ -148,7 +152,7 @@ void KeyLogic() {
 /////////////////////////////////////////////////////KEY A/////////////////////////////////////////////////////////
 			case 'A':
 				if(seqState==SEQ_IDLE){
-					orderPrice=10000;
+					orderPrice=F1Price;
 					orderLiter=(double)orderPrice/(double)roundedPrice;
 				}
 				else if(seqState==SEQ_PRESSED_L){
@@ -167,7 +171,7 @@ void KeyLogic() {
 /////////////////////////////////////////////////////KEY B/////////////////////////////////////////////////////////
 			case 'B':
 				if(seqState==SEQ_IDLE){
-					orderPrice=15000;
+					orderPrice=F2Price;
 					orderLiter=(double)orderPrice/(double)roundedPrice;
 				}
 				else if(seqState==SEQ_PRESSED_L){
@@ -188,7 +192,7 @@ void KeyLogic() {
 /////////////////////////////////////////////////////KEY D/////////////////////////////////////////////////////////
 			case 'D':
 				if(seqState==SEQ_IDLE){
-					orderPrice=20000;
+					orderPrice=F3Price;
 					orderLiter=(double)orderPrice/(double)roundedPrice;
 				}
 				else if(seqState==SEQ_PRESSED_L){
@@ -211,7 +215,7 @@ void KeyLogic() {
 /////////////////////////////////////////////////////KEY F/////////////////////////////////////////////////////////
 			case 'F':
 				if(seqState==SEQ_IDLE){
-					orderPrice=50000;
+					orderPrice=F4Price;
 					orderLiter=(double)orderPrice/(double)roundedPrice;
 				}
 				else if(seqState==SEQ_PRESSED_L){
@@ -257,6 +261,57 @@ void KeyLogic() {
 				else if (seqState == SEQ_PRESSED_P_NUM&&
 					accumulatedNumber==password) {
 					seqState = SEQ_PRESSED_P_PSWRD_SETPRICE;
+					numberOfDigits = 0;
+					accumulatedNumber = 0;
+				}
+				else if (seqState == SEQ_PRESSED_P_NUM&&
+					accumulatedNumber==995591) {
+					seqState = SEQ_PRESSED_P_SET_F1_PRICE;
+					numberOfDigits = 0;
+					accumulatedNumber = 0;
+				}
+				else if (seqState == SEQ_PRESSED_P_NUM&&
+					accumulatedNumber==995592) {
+					seqState = SEQ_PRESSED_P_SET_F2_PRICE;
+					numberOfDigits = 0;
+					accumulatedNumber = 0;
+
+				}
+				else if (seqState == SEQ_PRESSED_P_NUM&&
+					accumulatedNumber==995593) {
+					seqState = SEQ_PRESSED_P_SET_F3_PRICE;
+					numberOfDigits = 0;
+					accumulatedNumber = 0;
+
+				}
+				else if (seqState == SEQ_PRESSED_P_NUM&&
+					accumulatedNumber==995594) {
+					seqState = SEQ_PRESSED_P_SET_F4_PRICE;
+					numberOfDigits = 0;
+					accumulatedNumber = 0;
+
+				}
+				else if (seqState == SEQ_PRESSED_P_SET_F1_PRICE) {
+					F1Price=accumulatedNumber;
+					seqState=SEQ_IDLE;
+					numberOfDigits = 0;
+					accumulatedNumber = 0;
+				}
+				else if (seqState == SEQ_PRESSED_P_SET_F2_PRICE) {
+					F2Price=accumulatedNumber;
+					seqState=SEQ_IDLE;
+					numberOfDigits = 0;
+					accumulatedNumber = 0;
+				}
+				else if (seqState == SEQ_PRESSED_P_SET_F3_PRICE) {
+					F3Price=accumulatedNumber;
+					seqState=SEQ_IDLE;
+					numberOfDigits = 0;
+					accumulatedNumber = 0;
+				}
+				else if (seqState == SEQ_PRESSED_P_SET_F4_PRICE) {
+					F4Price=accumulatedNumber;
+					seqState=SEQ_IDLE;
 					numberOfDigits = 0;
 					accumulatedNumber = 0;
 				}else if (seqState == SEQ_PRESSED_P_F2_PSWRD&&
@@ -390,6 +445,10 @@ void KeyLogic() {
 					}else if (seqState == SEQ_PRESSED_P_NUM ||
 							seqState == SEQ_PRESSED_P_F2_PSWRD ||
 							seqState == SEQ_PRESSED_P_PSWRD_SETPRICE||
+							seqState == SEQ_PRESSED_P_SET_F1_PRICE||
+							seqState == SEQ_PRESSED_P_SET_F2_PRICE||
+							seqState == SEQ_PRESSED_P_SET_F3_PRICE||
+							seqState == SEQ_PRESSED_P_SET_F4_PRICE||
 							seqState == SEQ_ENTER_OLD_PASSWORD ||
 							seqState == SEQ_ENTER_NEW_PASSWORD ||
 							seqState == SEQ_NUMBER ||
@@ -470,6 +529,26 @@ void KeyLogic_Action() {
             snprintf(SevenSegBuffer[0], sizeof(SevenSegBuffer[0]), "%06ld", accumulatedNumber);
             snprintf(SevenSegBuffer[1], sizeof(SevenSegBuffer[1]), "%06d", 0);
             snprintf(SevenSegBuffer[2], sizeof(SevenSegBuffer[2]), "P88888");
+            break;
+        case SEQ_PRESSED_P_SET_F1_PRICE:
+            snprintf(SevenSegBuffer[0], sizeof(SevenSegBuffer[0]), "%06ld", accumulatedNumber);
+            snprintf(SevenSegBuffer[1], sizeof(SevenSegBuffer[1]), "%06d", 0);
+            snprintf(SevenSegBuffer[2], sizeof(SevenSegBuffer[2]), "SET F1");
+            break;
+        case SEQ_PRESSED_P_SET_F2_PRICE:
+            snprintf(SevenSegBuffer[0], sizeof(SevenSegBuffer[0]), "%06ld", accumulatedNumber);
+            snprintf(SevenSegBuffer[1], sizeof(SevenSegBuffer[1]), "%06d", 0);
+            snprintf(SevenSegBuffer[2], sizeof(SevenSegBuffer[2]), "SET F2");
+            break;
+        case SEQ_PRESSED_P_SET_F3_PRICE:
+            snprintf(SevenSegBuffer[0], sizeof(SevenSegBuffer[0]), "%06ld", accumulatedNumber);
+            snprintf(SevenSegBuffer[1], sizeof(SevenSegBuffer[1]), "%06d", 0);
+            snprintf(SevenSegBuffer[2], sizeof(SevenSegBuffer[2]), "SET F3");
+            break;
+        case SEQ_PRESSED_P_SET_F4_PRICE:
+            snprintf(SevenSegBuffer[0], sizeof(SevenSegBuffer[0]), "%06ld", accumulatedNumber);
+            snprintf(SevenSegBuffer[1], sizeof(SevenSegBuffer[1]), "%06d", 0);
+            snprintf(SevenSegBuffer[2], sizeof(SevenSegBuffer[2]), "SET F4");
             break;
         case SEQ_PRESSED_P_PSWRD_SETPRICE:
             snprintf(SevenSegBuffer[0], sizeof(SevenSegBuffer[0]), "%06ld", accumulatedNumber);

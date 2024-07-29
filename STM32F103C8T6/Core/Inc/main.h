@@ -46,6 +46,11 @@ extern uint32_t roundedPrice;
 extern uint32_t orderPrice;
 extern double orderLiter;
 
+extern uint32_t F1Price;
+extern uint32_t F2Price;
+extern uint32_t F3Price;
+extern uint32_t F4Price;
+
 extern int LEDPointFlag; // 0 -> 5 to choose which LED has point
 
 extern SPI_HandleTypeDef hspi1;
