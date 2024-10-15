@@ -486,8 +486,8 @@ void KeyLogic_Action() {
     char buffer[7];
     switch (seqState) {
         case SEQ_IDLE:
-        	snprintf(SevenSegBuffer[0], sizeof(SevenSegBuffer[0]), "%06d", 0);
-        	snprintf(SevenSegBuffer[1], sizeof(SevenSegBuffer[1]), "%06d", orderPrice);
+        	snprintf(SevenSegBuffer[0], sizeof(SevenSegBuffer[0]), "%06ld", encoderValue);
+        	snprintf(SevenSegBuffer[1], sizeof(SevenSegBuffer[1]), "%06ld", orderPrice);
         	snprintf(SevenSegBuffer[2], sizeof(SevenSegBuffer[2]), "%06.2f", orderLiter);
 
             break;

@@ -17,7 +17,6 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include <LED3x6.h>
 #include "main.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -45,9 +44,9 @@
 /* Private variables ---------------------------------------------------------*/
 SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi2;
+
+TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
-
-
 
 /* USER CODE BEGIN PV */
 uint8_t keyPressed = 0xFF;
@@ -55,6 +54,7 @@ uint32_t password = 345;
 long unsigned int totalLiters = 25173777; //theo đơn vị ml tức là 1000 = 1 lít
 long unsigned int totalLitersShift = 123456999;   //lít trong ca, có thể được reset khi giao ca
 
+uint32_t encoderValue = 0;
 uint32_t currPrice = 24000; // Giá xăng trên lít hiện tại (vnđ/L)
 uint32_t roundedPrice = 24000;
 
@@ -75,6 +75,7 @@ static void MX_GPIO_Init(void);
 static void MX_SPI2_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_SPI1_Init(void);
+static void MX_TIM1_Init(void);
 /* USER CODE BEGIN PFP */
 /* USER CODE END PFP */
 
@@ -122,6 +123,7 @@ int main(void)
   MX_SPI2_Init();
   MX_TIM2_Init();
   MX_SPI1_Init();
+  MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim2);
   setTimer(0,100);
@@ -140,6 +142,7 @@ int main(void)
 	  if(timer_flag[0]==1){
 
 		  SevenSegLEDsScan();
+		  encoderValue = __HAL_TIM_GET_COUNTER(&htim1);
 		  setTimer(0,5);
 	  }
 
@@ -281,6 +284,56 @@ static void MX_SPI2_Init(void)
 }
 
 /**
+  * @brief TIM1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM1_Init(void)
+{
+
+  /* USER CODE BEGIN TIM1_Init 0 */
+
+  /* USER CODE END TIM1_Init 0 */
+
+  TIM_Encoder_InitTypeDef sConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM1_Init 1 */
+
+  /* USER CODE END TIM1_Init 1 */
+  htim1.Instance = TIM1;
+  htim1.Init.Prescaler = 0;
+  htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim1.Init.Period = 65535;
+  htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim1.Init.RepetitionCounter = 0;
+  htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  sConfig.EncoderMode = TIM_ENCODERMODE_TI12;
+  sConfig.IC1Polarity = TIM_ICPOLARITY_RISING;
+  sConfig.IC1Selection = TIM_ICSELECTION_DIRECTTI;
+  sConfig.IC1Prescaler = TIM_ICPSC_DIV1;
+  sConfig.IC1Filter = 0;
+  sConfig.IC2Polarity = TIM_ICPOLARITY_RISING;
+  sConfig.IC2Selection = TIM_ICSELECTION_DIRECTTI;
+  sConfig.IC2Prescaler = TIM_ICPSC_DIV1;
+  sConfig.IC2Filter = 0;
+  if (HAL_TIM_Encoder_Init(&htim1, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM1_Init 2 */
+  HAL_TIM_Encoder_Start(&htim1, TIM_CHANNEL_ALL);
+  /* USER CODE END TIM1_Init 2 */
+
+}
+
+/**
   * @brief TIM2 Initialization Function
   * @param None
   * @retval None
@@ -341,18 +394,18 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(Latch_SPI1_GPIO_Port, Latch_SPI1_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, LED_Pin|Latch_SPI1_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, Latch_SPI_Pin|OUT0_Pin|OUT1_Pin|OUT2_Pin
                           |OUT3_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : Latch_SPI1_Pin */
-  GPIO_InitStruct.Pin = Latch_SPI1_Pin;
+  /*Configure GPIO pins : LED_Pin Latch_SPI1_Pin */
+  GPIO_InitStruct.Pin = LED_Pin|Latch_SPI1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(Latch_SPI1_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pins : D0_Pin D1_Pin D2_Pin D3_Pin
                            D4_Pin */

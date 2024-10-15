@@ -40,6 +40,7 @@ extern uint8_t keyPressed;
 extern long unsigned int totalLiters;		//Total liters from beginning
 extern long unsigned int totalLitersShift;	//Total liter per shift, ( > 1000000 return 0)
 
+extern uint32_t encoderValue;
 extern uint32_t currPrice;
 extern uint32_t roundedPrice;
 
@@ -81,6 +82,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define LED_Pin GPIO_PIN_2
+#define LED_GPIO_Port GPIOA
 #define Latch_SPI1_Pin GPIO_PIN_6
 #define Latch_SPI1_GPIO_Port GPIOA
 #define D0_Pin GPIO_PIN_0
